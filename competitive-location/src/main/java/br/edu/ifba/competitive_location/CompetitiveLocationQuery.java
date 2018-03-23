@@ -2,7 +2,7 @@ package br.edu.ifba.competitive_location;
 
 public class CompetitiveLocationQuery {
 
-	public QueryResult run(Clients clients, Facilities facilities, CandidateLocations candidates) {
+	public Candidate run(Clients clients, Facilities facilities, CandidateLocations candidates) {
 		Candidate bestCandidate = null;
 		for (Candidate candidate : candidates) {
 			candidate.startScore();
@@ -14,15 +14,13 @@ public class CompetitiveLocationQuery {
 			}
 		}
 		
-		QueryResult queryResult = new QueryResult();
-		queryResult.setBestLocation(bestCandidate);
-		return queryResult;
+		return bestCandidate;
 	}
 	
 	private void calculateCandidateScore(Facilities facilities, Client client, Candidate candidate) {
 		for (Facility facility : facilities) {
 			if (facility.distance(client) < candidate.distance(client)) {
-				return;
+				break;
 			}
 			candidate.addToScore(client.getWeight());
 		}
