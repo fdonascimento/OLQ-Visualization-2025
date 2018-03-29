@@ -1,8 +1,17 @@
 package br.edu.ifba.competitive_location;
 
-public class CompetitiveLocationQuery {
+import br.edu.ifba.location_query.Candidate;
+import br.edu.ifba.location_query.Candidates;
+import br.edu.ifba.location_query.Client;
+import br.edu.ifba.location_query.Clients;
+import br.edu.ifba.location_query.Facilities;
+import br.edu.ifba.location_query.Facility;
+import br.edu.ifba.location_query.LocationQuery;
 
-	public Candidate run(Clients clients, Facilities facilities, CandidateLocations candidates) {
+public class CompetitiveLocationQuery implements LocationQuery {
+
+	@Override
+	public Candidate run(Clients clients, Facilities facilities, Candidates candidates) {
 		Candidate bestCandidate = null;
 		for (Candidate candidate : candidates) {
 			calculateCandidateScore(clients, facilities, candidate);

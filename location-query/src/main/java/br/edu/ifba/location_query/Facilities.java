@@ -1,4 +1,4 @@
-package br.edu.ifba.competitive_location;
+package br.edu.ifba.location_query;
 
 import java.util.ArrayList;
 import java.util.Iterator;

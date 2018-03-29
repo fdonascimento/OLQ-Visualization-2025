@@ -1,14 +1,14 @@
-package br.edu.ifba.competitive_location;
+package br.edu.ifba.location_query;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CandidateLocations implements Iterable<Candidate>{
+public class Candidates implements Iterable<Candidate>{
 
 	private List<Candidate> candidates;
 	
-	public CandidateLocations() {
+	public Candidates() {
 		candidates = new ArrayList<>();
 	}
 	

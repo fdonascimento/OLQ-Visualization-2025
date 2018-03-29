@@ -18,6 +18,7 @@
 		<assertj.version>3.9.1</assertj.version>
 		<junit.platform.version>1.1.0</junit.platform.version>
 		<mockito.version>1.10.19</mockito.version>
+		<location.query.version>0.0.1-SNAPSHOT</location.query.version>
 	</properties>
 
 	<dependencies>
@@ -53,6 +54,12 @@
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>br.edu.ifba</groupId>
+			<artifactId>location-query</artifactId>
+			<version>${location.query.version}</version>
 		</dependency>
 
 	</dependencies>

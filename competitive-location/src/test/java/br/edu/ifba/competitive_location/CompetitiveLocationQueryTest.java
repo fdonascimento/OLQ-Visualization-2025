@@ -4,6 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
+import br.edu.ifba.location_query.Candidate;
+import br.edu.ifba.location_query.Candidates;
+import br.edu.ifba.location_query.Clients;
+import br.edu.ifba.location_query.Facilities;
+import br.edu.ifba.location_query.GeoLocation;
+
 public class CompetitiveLocationQueryTest {
 
 	@Test
@@ -18,7 +24,7 @@ public class CompetitiveLocationQueryTest {
 		Facilities facilities = new Facilities();
 		facilities.addFacility(-12.9654258, -38.4194011); //Pituaçu
 		
-		CandidateLocations candidates = new CandidateLocations();
+		Candidates candidates = new Candidates();
 		candidates.addCandidate(-12.9807739, -38.4332938); //Boca do Rio
 		candidates.addCandidate(-12.9409831, -38.439391); //Novo Horizonte
 		
