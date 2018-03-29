@@ -10,3 +10,7 @@ location-query/\.project
 location-query/\.classpath
 
 *.class
+
+competitive-location/target/
+
+core/\.classpath
