@@ -1,0 +1,12 @@
+#This file will configure which providers and which location query will be used by the application.
+#The providers and the location queries must be in jar files and must be placed in the appropriated folders.
+# The parameters must be set with the jar names without the extension.
+
+#The jar must be placed in the LocationQueries folder.
+locationQuery: CompetitiveLocation
+#The jar must be placed in the ClientProviders folder.
+clientProvider: FoursquareClientProvider
+#The jar must be placed in the FacilityProviders folder.
+facilityProvider: GoogleMapsFacilityProvider
+#The jar must be placed in the CandidateProviders folder.
+candidateProvider: GoogleMapsCandidateProvider
