@@ -3,14 +3,14 @@ package optimalLocation.core;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import optimalLocaiton.query.Candidate;
-import optimalLocaiton.query.Candidates;
-import optimalLocaiton.query.Clients;
-import optimalLocaiton.query.Facilities;
-import optimalLocaiton.query.LocationQuery;
-import optimalLocaiton.query.providers.CandidateProvider;
-import optimalLocaiton.query.providers.ClientProvider;
-import optimalLocaiton.query.providers.FacilityProvider;
+import optimalLocation.query.Candidate;
+import optimalLocation.query.Candidates;
+import optimalLocation.query.Clients;
+import optimalLocation.query.Facilities;
+import optimalLocation.query.LocationQuery;
+import optimalLocation.query.providers.CandidateProvider;
+import optimalLocation.query.providers.ClientProvider;
+import optimalLocation.query.providers.FacilityProvider;
 
 @Component
 public class OptimalLocationQuery {

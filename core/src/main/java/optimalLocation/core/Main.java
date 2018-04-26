@@ -2,7 +2,7 @@ package optimalLocation.core;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import optimalLocaiton.query.Candidate;
+import optimalLocation.query.Candidate;
 
 public class Main {
 

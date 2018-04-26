@@ -1,12 +1,12 @@
 package optimalLocation.competitive_location;
 
-import optimalLocaiton.query.Candidate;
-import optimalLocaiton.query.Candidates;
-import optimalLocaiton.query.Client;
-import optimalLocaiton.query.Clients;
-import optimalLocaiton.query.Facilities;
-import optimalLocaiton.query.Facility;
-import optimalLocaiton.query.LocationQuery;
+import optimalLocation.query.Candidate;
+import optimalLocation.query.Candidates;
+import optimalLocation.query.Client;
+import optimalLocation.query.Clients;
+import optimalLocation.query.Facilities;
+import optimalLocation.query.Facility;
+import optimalLocation.query.LocationQuery;
 
 public class CompetitiveLocationQuery implements LocationQuery {
 

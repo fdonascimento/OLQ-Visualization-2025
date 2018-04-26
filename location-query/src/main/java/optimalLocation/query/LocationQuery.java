@@ -1,4 +1,4 @@
-package optimalLocaiton.query;
+package optimalLocation.query;
 
 public interface LocationQuery {
 

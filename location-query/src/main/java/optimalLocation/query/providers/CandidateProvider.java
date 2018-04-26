@@ -1,6 +1,6 @@
-package optimalLocaiton.query.providers;
+package optimalLocation.query.providers;
 
-import optimalLocaiton.query.Candidates;
+import optimalLocation.query.Candidates;
 
 public interface CandidateProvider {
 

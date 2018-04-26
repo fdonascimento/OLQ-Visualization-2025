@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import optimalLocaiton.query.Candidate;
-import optimalLocaiton.query.Candidates;
-import optimalLocaiton.query.Clients;
-import optimalLocaiton.query.Facilities;
-import optimalLocaiton.query.GeoLocation;
 import optimalLocation.competitive_location.CompetitiveLocationQuery;
+import optimalLocation.query.Candidate;
+import optimalLocation.query.Candidates;
+import optimalLocation.query.Clients;
+import optimalLocation.query.Facilities;
+import optimalLocation.query.GeoLocation;
 
 public class CompetitiveLocationQueryTest {
 

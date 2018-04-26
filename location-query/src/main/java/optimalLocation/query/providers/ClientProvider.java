@@ -1,6 +1,6 @@
-package optimalLocaiton.query.providers;
+package optimalLocation.query.providers;
 
-import optimalLocaiton.query.Clients;
+import optimalLocation.query.Clients;
 
 public interface ClientProvider {
 

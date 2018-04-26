@@ -1,4 +1,4 @@
-package optimalLocaiton.query;
+package optimalLocation.query;
 
 import java.util.ArrayList;
 import java.util.Iterator;
