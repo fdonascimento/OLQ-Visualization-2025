@@ -6,17 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import optimalLocaiton.query.Candidate;
-import optimalLocaiton.query.Candidates;
-import optimalLocaiton.query.Clients;
-import optimalLocaiton.query.Facilities;
-import optimalLocaiton.query.LocationQuery;
-import optimalLocaiton.query.providers.CandidateProvider;
-import optimalLocaiton.query.providers.ClientProvider;
-import optimalLocaiton.query.providers.FacilityProvider;
 import optimalLocation.configuration.YamlConfig;
-import optimalLocation.loader.ClassLoader;
+import optimalLocation.loader.BeanFinder;
 import optimalLocation.loader.FindLocationQueryException;
+import optimalLocation.query.LocationQuery;
+import optimalLocation.query.providers.CandidateProvider;
+import optimalLocation.query.providers.ClientProvider;
+import optimalLocation.query.providers.FacilityProvider;
 import optimalLocation.yaml.YamlReadException;
 import optimalLocation.yaml.YamlReader;
 
@@ -24,45 +20,29 @@ import optimalLocation.yaml.YamlReader;
 @ComponentScan(value="optimalLocation.core")
 public class DependencyInjectionConfiguration {
 
-	@Bean
-	public FacilityProvider getFacilityProvider() {
-		return new FacilityProvider() {
-			
-			@Override
-			public Facilities getFacilities() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
+	private YamlConfig yamlConfig;
+	
+	public DependencyInjectionConfiguration() throws YamlReadException {
+		this.yamlConfig = YamlReader.readYaml(new File("settings.yaml"), YamlConfig.class);;
 	}
 	
 	@Bean
-	public ClientProvider getClientProvider() {
-		return new ClientProvider() {
-			
-			@Override
-			public Clients getClients() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
+	public FacilityProvider getFacilityProvider() throws FindLocationQueryException {
+		return BeanFinder.findFacilityProvider(yamlConfig.getFacilityProvider());
 	}
 	
 	@Bean
-	public CandidateProvider getCandidateProvider() {
-		return new CandidateProvider() {
-			
-			@Override
-			public Candidates getCandidates() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
+	public ClientProvider getClientProvider() throws FindLocationQueryException {
+		return BeanFinder.findClientProvider(yamlConfig.getClientProvider());
 	}
 	
 	@Bean
-	public LocationQuery getLocationQuery() throws YamlReadException, FindLocationQueryException {
-		YamlConfig yamlConfig = YamlReader.readYaml(new File("settings.yaml"), YamlConfig.class);
-		return ClassLoader.findLocationQuery(yamlConfig.getLocationQuery());
+	public CandidateProvider getCandidateProvider() throws FindLocationQueryException {
+		return BeanFinder.findCandidateProvider(yamlConfig.getCandidateProvider());
+	}
+	
+	@Bean
+	public LocationQuery getLocationQuery() throws FindLocationQueryException {
+		return BeanFinder.findLocationQuery(yamlConfig.getLocationQuery());
 	}
 }

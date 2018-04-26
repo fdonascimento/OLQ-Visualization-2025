@@ -5,8 +5,8 @@
 #The jar must be placed in the LocationQueries folder.
 locationQuery: CompetitiveLocation
 #The jar must be placed in the ClientProviders folder.
-clientProvider: FoursquareClientProvider
+clientProvider: ClientProviderFake
 #The jar must be placed in the FacilityProviders folder.
-facilityProvider: GoogleMapsFacilityProvider
+facilityProvider: FacilityProviderFake
 #The jar must be placed in the CandidateProviders folder.
-candidateProvider: GoogleMapsCandidateProvider
+candidateProvider: CandidateProviderFake
