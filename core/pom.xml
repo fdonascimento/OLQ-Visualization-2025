@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>optimalLocation</groupId>
-	<artifactId>competitive-location</artifactId>
+	<artifactId>core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>competitive-location</name>
+	<name>core</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -19,6 +19,8 @@
 		<junit.platform.version>1.1.0</junit.platform.version>
 		<mockito.version>1.10.19</mockito.version>
 		<location.query.version>0.0.1-SNAPSHOT</location.query.version>
+		<spring.context.version>5.0.5.RELEASE</spring.context.version>
+		<jackson.version>2.9.5</jackson.version>
 	</properties>
 
 	<dependencies>
@@ -31,7 +33,8 @@
 			<scope>test</scope>
 		</dependency>
 
-	<!--This dependency is necessary to run junit5 on IDE. In this case on the Eclipse  -->
+		<!--This dependency is necessary to run junit5 on IDE. In this case on 
+			the Eclipse -->
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
@@ -55,11 +58,32 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>optimalLocation</groupId>
 			<artifactId>query</artifactId>
 			<version>${location.query.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.context.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.dataformat</groupId>
+		    <artifactId>jackson-dataformat-yaml</artifactId>
+		    <version>${jackson.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -76,7 +100,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.19</version>
 				<dependencies>
-					<!--This dependency is necessary to run junit5 with maven. The tests will be run when the project is built by maven.  -->
+					<!--This dependency is necessary to run junit5 with maven. The tests 
+						will be run when the project is built by maven. -->
 					<dependency>
 						<groupId>org.junit.platform</groupId>
 						<artifactId>junit-platform-surefire-provider</artifactId>

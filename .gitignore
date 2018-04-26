@@ -1,0 +1,10 @@
+
+competitive-location/target/classes/META-INF/maven/br\.edu\.ifba/competitive-location/pom\.properties
+
+*.project
+*.prefs
+*.class
+competitive-location/target/
+*.jar
+*.classpath
+
