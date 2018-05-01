@@ -8,3 +8,7 @@ competitive-location/target/
 *.jar
 *.classpath
 
+
+locationQuery-rest/\.settings/
+
+locationQuery-rest/settings\.yaml
