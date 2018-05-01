@@ -78,6 +78,6 @@ public class BeanFinder {
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
 		provider.addIncludeFilter(new AssignableTypeFilter(classToFind));
 		provider.setResourceLoader(new PathMatchingResourcePatternResolver(classLoader));
-		return provider.findCandidateComponents("").stream().findFirst();
+		return provider.findCandidateComponents("optimalLocation").stream().findFirst();
 	}
 }
