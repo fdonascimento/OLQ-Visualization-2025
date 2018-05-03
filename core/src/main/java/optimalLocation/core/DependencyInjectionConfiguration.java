@@ -23,7 +23,7 @@ public class DependencyInjectionConfiguration {
 	private YamlConfig yamlConfig;
 	
 	public DependencyInjectionConfiguration() throws YamlReadException {
-		this.yamlConfig = YamlReader.readYaml(new File("settings.yaml"), YamlConfig.class);;
+		this.yamlConfig = YamlReader.readYaml(new File("settings.yaml"), YamlConfig.class);
 	}
 	
 	@Bean
