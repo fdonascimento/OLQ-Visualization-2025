@@ -11,4 +11,4 @@ competitive-location/target/
 
 locationQuery-rest/\.settings/
 
-locationQuery-rest/settings\.yaml
+core/\.settings/
