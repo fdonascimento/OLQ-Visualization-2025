@@ -10,5 +10,13 @@ competitive-location/target/
 
 
 locationQuery-rest/\.settings/
+locationQuery-cmd/\.settings/
 
 core/\.settings/
+
+core/\.springBeans
+
+locationQuery-cmd/target/
+locationQuery-rest/target/
+core/target/
+location-query/target/

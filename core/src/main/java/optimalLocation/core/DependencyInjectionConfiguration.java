@@ -1,7 +1,6 @@
 package optimalLocation.core;
 
-import java.io.File;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +12,6 @@ import optimalLocation.query.LocationQuery;
 import optimalLocation.query.providers.CandidateProvider;
 import optimalLocation.query.providers.ClientProvider;
 import optimalLocation.query.providers.FacilityProvider;
-import optimalLocation.yaml.YamlReadException;
-import optimalLocation.yaml.YamlReader;
 
 @Configuration
 @ComponentScan(value="optimalLocation.core")
@@ -22,8 +19,9 @@ public class DependencyInjectionConfiguration {
 
 	private YamlConfig yamlConfig;
 	
-	public DependencyInjectionConfiguration() throws YamlReadException {
-		this.yamlConfig = YamlReader.readYaml(new File("settings.yaml"), YamlConfig.class);
+	@Autowired
+	public DependencyInjectionConfiguration(YamlConfig yamlConfig) {
+		this.yamlConfig = yamlConfig;
 	}
 	
 	@Bean
