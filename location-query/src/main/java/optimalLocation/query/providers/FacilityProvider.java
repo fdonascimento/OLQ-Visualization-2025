@@ -1,6 +1,6 @@
 package optimalLocation.query.providers;
 
-import optimalLocation.query.Facilities;
+import optimalLocation.query.domain.Facilities;
 
 public interface FacilityProvider {
 

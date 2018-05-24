@@ -3,11 +3,11 @@ package optimalLocation.core;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import optimalLocation.query.Candidate;
-import optimalLocation.query.Candidates;
-import optimalLocation.query.Clients;
-import optimalLocation.query.Facilities;
 import optimalLocation.query.LocationQuery;
+import optimalLocation.query.domain.Candidates;
+import optimalLocation.query.domain.Clients;
+import optimalLocation.query.domain.Facilities;
+import optimalLocation.query.domain.LocationQueryResult;
 import optimalLocation.query.providers.CandidateProvider;
 import optimalLocation.query.providers.ClientProvider;
 import optimalLocation.query.providers.FacilityProvider;
@@ -39,12 +39,11 @@ public class OptimalLocationQuery {
 	public void setLocationQuery(LocationQuery locationQuery) {
 		this.locationQuery = locationQuery;
 	}
-
-	public Candidate findBestLocation() {
+	
+	public LocationQueryResult findBestLocation() {
 		Clients clients = clientProvider.getClients();
 		Candidates candidates = candidateProvider.getCandidates();
 		Facilities facilities = facilityProvider.getFacilities();
-
 		return locationQuery.run(clients, facilities, candidates);
 	}
 }

@@ -1,6 +1,6 @@
 package optimalLocation.candidate_provider_fake;
 
-import optimalLocation.query.Candidates;
+import optimalLocation.query.domain.Candidates;
 import optimalLocation.query.providers.CandidateProvider;
 
 public class CandidateProviderFake implements CandidateProvider {

@@ -1,6 +1,6 @@
 package optimalLocation.client_provider_fake;
 
-import optimalLocation.query.Clients;
+import optimalLocation.query.domain.Clients;
 import optimalLocation.query.providers.ClientProvider;
 
 public class ClientProviderFake implements ClientProvider {

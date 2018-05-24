@@ -1,4 +1,4 @@
-package optimalLocation.query;
+package optimalLocation.query.domain;
 
 public class GeoLocation {
 

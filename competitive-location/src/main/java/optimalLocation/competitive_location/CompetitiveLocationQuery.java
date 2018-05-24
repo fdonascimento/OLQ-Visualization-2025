@@ -1,24 +1,31 @@
 package optimalLocation.competitive_location;
 
-import optimalLocation.query.Candidate;
-import optimalLocation.query.Candidates;
-import optimalLocation.query.Client;
-import optimalLocation.query.Clients;
-import optimalLocation.query.Facilities;
-import optimalLocation.query.Facility;
 import optimalLocation.query.LocationQuery;
+import optimalLocation.query.domain.Candidate;
+import optimalLocation.query.domain.Candidates;
+import optimalLocation.query.domain.Client;
+import optimalLocation.query.domain.Clients;
+import optimalLocation.query.domain.Facilities;
+import optimalLocation.query.domain.Facility;
+import optimalLocation.query.domain.LocationQueryResult;
 
 public class CompetitiveLocationQuery implements LocationQuery {
 
 	@Override
-	public Candidate run(Clients clients, Facilities facilities, Candidates candidates) {
+	public LocationQueryResult run(Clients clients, Facilities facilities, Candidates candidates) {
+		LocationQueryResult result = new LocationQueryResult();
+		result.setClients(clients);
+		result.setFacilities(facilities);
+		result.setCandidates(candidates);
+		
 		Candidate bestCandidate = null;
 		for (Candidate candidate : candidates) {
 			calculateCandidateScore(clients, facilities, candidate);
 			bestCandidate = getBestCandidate(bestCandidate, candidate);
 		}
 		
-		return bestCandidate;
+		result.setBestCandidate(bestCandidate);
+		return result;
 	}
 
 	private Candidate getBestCandidate(Candidate bestCandidate, Candidate newCandidate) {

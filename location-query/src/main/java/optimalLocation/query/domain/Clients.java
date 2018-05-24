@@ -1,8 +1,9 @@
-package optimalLocation.query;
+package optimalLocation.query.domain;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Clients implements Iterable<Client>{
 
@@ -21,4 +22,8 @@ public class Clients implements Iterable<Client>{
 		return clients.iterator();
 	}
 
+	public Stream<Client> stream() {
+		return clients.stream();
+	}
 }
+ 

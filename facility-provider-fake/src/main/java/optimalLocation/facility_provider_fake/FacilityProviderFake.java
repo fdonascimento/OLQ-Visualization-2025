@@ -1,6 +1,6 @@
 package optimalLocation.facility_provider_fake;
 
-import optimalLocation.query.Facilities;
+import optimalLocation.query.domain.Facilities;
 import optimalLocation.query.providers.FacilityProvider;
 
 public class FacilityProviderFake implements FacilityProvider
