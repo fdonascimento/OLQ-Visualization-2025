@@ -1,14 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {latLng, tileLayer, icon, marker, polyline} from 'leaflet';
+import {latLng, tileLayer, icon, circle, polyline} from 'leaflet';
 import {Map, point} from 'leaflet';
 import {Http} from '@angular/http';
-import {map} from 'rxjs/operators';
-
-class BestLocation {
-  constructor(private latitude: string, private longitude: string) {
-
-  }
-}
+import {map as mapOperator} from 'rxjs/operators';
 
 @Component({
   selector: 'app-map-visualization',
@@ -26,19 +20,9 @@ export class MapVisualizationComponent implements OnInit {
     detectRetina: true
   });
 
-  // Marker for the top of Mt. Ranier
-  summit = marker([46.8523, -121.7603], {
-    icon: icon({
-      iconSize: [25, 41],
-      iconAnchor: [13, 41],
-      iconUrl: 'leaflet/marker-icon.png',
-      shadowUrl: 'leaflet/marker-shadow.png'
-    })
-  });
-
    // Set the initial set of displayed layers (we could also use the leafletLayers input binding for this)
   options = {
-    layers: [ this.googleMaps, this.summit ],
+    layers: [ this.googleMaps],
     zoom: 12,
     center: latLng([ -12.919949, -38.419847 ])
   };
@@ -48,17 +32,73 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.findBestLocation();
   }
 
   findBestLocation() {
-    const url = `${this.olqApi}/bestLocation`;
+    const url = `${this.olqApi}/findBestLocation`;
     console.log(url);
-    this.http.get(url).subscribe(res => {
-      const bestLocation = res.json();
-      this.summit.setLatLng([bestLocation.latitude, bestLocation.longitude]);
-      console.log(bestLocation);
+    return this.http.get(url).pipe(mapOperator( response => {
+      return response.json();
+    }));
+  }
+
+  onMapReady(map: Map) {
+    const result = this.findBestLocation();
+    result.subscribe(data => {
+      this.putCandidatesOnMap(map, data.candidates);
+      this.putBestLocationOnMap(map, data.bestLocation);
+      this.putClientsOnMap(map, data.clients);
+      this.putFacilitiesOnMap(map, data.facilities);
     });
   }
 
+  putCandidatesOnMap(map: Map, candidates) {
+    for (const candidate of candidates) {
+      const clientMarker = circle([candidate.latitude, candidate.longitude], {
+        color: 'green',
+        fillColor: 'lightgreen',
+        fillOpacity: 0.5,
+        radius: 5
+      });
+
+      clientMarker.addTo(map);
+    }
+  }
+
+  putBestLocationOnMap(map: Map, bestLocation) {
+    const bestLocationMarker = circle([bestLocation.latitude, bestLocation.longitude], {
+      color: 'blue',
+      fillColor: 'lightblue',
+      fillOpacity: 0.5,
+      radius: 5
+    });
+
+    bestLocationMarker.addTo(map);
+  }
+
+  putClientsOnMap(map: Map, clients) {
+    for (const client of clients) {
+      const clientMarker = circle([client.latitude, client.longitude], {
+        color: 'black',
+        fillColor: 'lightblack',
+        fillOpacity: 0.5,
+        radius: 5
+      });
+
+      clientMarker.addTo(map);
+    }
+  }
+
+  putFacilitiesOnMap(map: Map, facilities) {
+    for (const facility of facilities) {
+      const clientMarker = circle([facility.latitude, facility.longitude], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 5
+      });
+
+      clientMarker.addTo(map);
+    }
+  }
 }
