@@ -25,6 +25,7 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		}
 		
 		result.setBestCandidate(bestCandidate);
+		candidates.removeCandidate(bestCandidate);
 		return result;
 	}
 
@@ -48,6 +49,7 @@ public class CompetitiveLocationQuery implements LocationQuery {
 				break;
 			}
 			candidate.addToScore(client.getWeight());
+			candidate.addAttractedClient(client);
 		}
 	}
 }

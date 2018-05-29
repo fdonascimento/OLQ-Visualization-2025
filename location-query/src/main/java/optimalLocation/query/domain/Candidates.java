@@ -16,6 +16,10 @@ public class Candidates implements Iterable<Candidate>{
 	public void addCandidate(Double latitude, Double longitude) {
 		candidates.add(new Candidate(latitude, longitude));
 	}
+	
+	public void removeCandidate(Candidate candidate) {
+		this.candidates.remove(candidate);
+	}
 
 	@Override
 	public Iterator<Candidate> iterator() {

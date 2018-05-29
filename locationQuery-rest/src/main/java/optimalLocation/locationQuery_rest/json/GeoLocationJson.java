@@ -8,8 +8,10 @@ public class GeoLocationJson {
 	private Double longitude;
 
 	public GeoLocationJson(GeoLocation geoLocation) {
-		this.latitude = geoLocation.getLatitude();
-		this.longitude = geoLocation.getLongitude();
+		if (geoLocation != null) {
+			this.latitude = geoLocation.getLatitude();
+			this.longitude = geoLocation.getLongitude();
+		}
 	}
 	
 	public GeoLocationJson(Double latitude, Double longitude) {

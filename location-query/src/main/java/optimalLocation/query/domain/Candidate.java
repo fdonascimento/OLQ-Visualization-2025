@@ -1,8 +1,12 @@
 package optimalLocation.query.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Candidate extends GeoLocation {
 
 	private Double score;
+	private List<Client> attractedClients;
 	
 	public Candidate(Double latitude, Double longitude) {
 		super(latitude, longitude);
@@ -20,4 +24,14 @@ public class Candidate extends GeoLocation {
 		score = 0.;
 	}
 
+	public void addAttractedClient(Client client) {
+		if (attractedClients == null) {
+			this.attractedClients = new ArrayList<>();
+		}
+		this.attractedClients.add(client);
+	}
+	
+	public List<Client> getAttractedClients() {
+		return this.attractedClients;
+	}
 }
