@@ -1,49 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import {latLng, tileLayer, icon, circle, polyline} from 'leaflet';
-import {Map, point} from 'leaflet';
-import {Http} from '@angular/http';
-import {map as mapOperator} from 'rxjs/operators';
+import { Http } from '@angular/http';
+import { Map, circle, latLng, tileLayer, polygon } from 'leaflet';
+import { map as mapOperator } from 'rxjs/operators';
+import { BestLocationService } from '../best-location-service';
 
 @Component({
   selector: 'app-map-visualization',
   templateUrl: './map-visualization.component.html',
-  styleUrls: ['./map-visualization.component.css']
+  styleUrls: ['./map-visualization.component.css'],
+  providers: [BestLocationService]
 })
 export class MapVisualizationComponent implements OnInit {
 
-  private olqApi: string;
+  private googleMaps;
+  public options;
 
-  // Define our base layers so we can reference them multiple times
-  googleMaps = tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
-    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-    detectRetina: true
-  });
+  constructor(private bestLocationService: BestLocationService) {
+    // Define our base layers so we can reference them multiple times
+    this.googleMaps = tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      detectRetina: true
+    });
 
-   // Set the initial set of displayed layers (we could also use the leafletLayers input binding for this)
-  options = {
-    layers: [ this.googleMaps],
-    zoom: 12,
-    center: latLng([ -12.919949, -38.419847 ])
-  };
-
-  constructor(private http: Http) {
-    this.olqApi = 'http://localhost:8080';
+    // Set the initial set of displayed layers (we could also use the leafletLayers input binding for this)
+    this.options = {
+      layers: [ this.googleMaps],
+      zoom: 12,
+      center: latLng([ -12.919949, -38.419847 ])
+    };
   }
 
   ngOnInit() {
   }
 
-  findBestLocation() {
-    const url = `${this.olqApi}/findBestLocation`;
-    console.log(url);
-    return this.http.get(url).pipe(mapOperator( response => {
-      return response.json();
-    }));
-  }
-
   onMapReady(map: Map) {
-    const result = this.findBestLocation();
+    const result = this.bestLocationService.findBestLocation();
     result.subscribe(data => {
       this.putCandidatesOnMap(map, data.candidates);
       this.putBestLocationOnMap(map, data.bestLocation);
@@ -74,6 +66,19 @@ export class MapVisualizationComponent implements OnInit {
     });
 
     bestLocationMarker.addTo(map);
+    this.putBestLocationAttractedClientsOnMap(map, bestLocation);
+  }
+
+  putBestLocationAttractedClientsOnMap(map: Map, bestLocation) {
+    const coordinates = [];
+    for (const client of bestLocation.attractedClients) {
+      coordinates.push([client.latitude, client.longitude]);
+    }
+
+    const attractedArea = polygon(coordinates, {
+      color: 'blue',
+      weight: 0
+    }).addTo(map);
   }
 
   putClientsOnMap(map: Map, clients) {
