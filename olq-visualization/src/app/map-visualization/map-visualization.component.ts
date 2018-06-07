@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import { Map, circle, latLng, tileLayer, polygon } from 'leaflet';
 import { map as mapOperator } from 'rxjs/operators';
 import { BestLocationService } from '../best-location-service';
+import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 
 @Component({
   selector: 'app-map-visualization',
@@ -75,7 +76,12 @@ export class MapVisualizationComponent implements OnInit {
       coordinates.push([client.latitude, client.longitude]);
     }
 
-    const attractedArea = polygon(coordinates, {
+    coordinates.push([bestLocation.latitude, bestLocation.longitude]);
+    console.log(coordinates);
+    const result = monotoneChainConvexHull(coordinates);
+    console.log(result);
+
+    const attractedArea = polygon(result, {
       color: 'blue',
       weight: 0
     }).addTo(map);
