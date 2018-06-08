@@ -4,10 +4,17 @@ public class GeoLocation {
 
 	private Double latitude;
 	private Double longitude;
+	private String name;
 
 	public GeoLocation(Double latitude, Double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
+	}
+	
+	public GeoLocation(Double latitude, Double longitude, String name) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.name = name;
 	}
 
 	public Double getLatitude() {
@@ -18,6 +25,14 @@ public class GeoLocation {
 		return longitude;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public Double distance(GeoLocation other) {
 		final double earthRadius = 6371; //Km
 		

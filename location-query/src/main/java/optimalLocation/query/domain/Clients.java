@@ -16,6 +16,10 @@ public class Clients implements Iterable<Client>{
 	public void addClient(Double latitude, Double longitude) {
 		clients.add(new Client(latitude, longitude));
 	}
+	
+	public void addClient(Double latitude, Double longitude, String name) {
+		clients.add(new Client(latitude, longitude, name));
+	}
 
 	@Override
 	public Iterator<Client> iterator() {

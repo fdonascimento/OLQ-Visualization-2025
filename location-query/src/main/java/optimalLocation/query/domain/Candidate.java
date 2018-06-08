@@ -11,6 +11,10 @@ public class Candidate extends GeoLocation {
 	public Candidate(Double latitude, Double longitude) {
 		super(latitude, longitude);
 	}
+	
+	public Candidate(Double latitude, Double longitude, String name) {
+		super(latitude, longitude, name);
+	}
 
 	public void addToScore(Double weight) {
 		score += weight;

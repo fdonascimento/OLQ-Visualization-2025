@@ -16,6 +16,10 @@ public class Facilities implements Iterable<Facility>{
 	public void addFacility(Double latitude, Double longitude) {
 		facilities.add(new Facility(latitude, longitude));
 	}
+	
+	public void addFacility(Double latitude, Double longitude, String name) {
+		facilities.add(new Facility(latitude, longitude, name));
+	}
 
 	@Override
 	public Iterator<Facility> iterator() {

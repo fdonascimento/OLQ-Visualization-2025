@@ -6,11 +6,13 @@ public class GeoLocationJson {
 
 	private Double latitude;
 	private Double longitude;
+	private String name;
 
 	public GeoLocationJson(GeoLocation geoLocation) {
 		if (geoLocation != null) {
 			this.latitude = geoLocation.getLatitude();
 			this.longitude = geoLocation.getLongitude();
+			this.name = geoLocation.getName();
 		}
 	}
 	
@@ -26,5 +28,9 @@ public class GeoLocationJson {
 
 	public Double getLongitude() {
 		return longitude;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }

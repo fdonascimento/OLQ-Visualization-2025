@@ -8,6 +8,11 @@ public class Client extends GeoLocation {
 		super(latitude, longitude);
 		weight = 1.0;
 	}
+	
+	public Client(Double latitude, Double longitude, String name) {
+		this(latitude, longitude);
+		super.setName(name);
+	}
 
 	public Double getWeight() {
 		return weight;
