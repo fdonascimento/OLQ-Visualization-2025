@@ -55,6 +55,8 @@ export class MapVisualizationComponent implements OnInit {
       });
 
       clientMarker.addTo(map);
+      candidate.color = 'green';
+      this.drawAttractedArea(map, candidate);
     }
   }
 
@@ -67,22 +69,23 @@ export class MapVisualizationComponent implements OnInit {
     });
 
     bestLocationMarker.addTo(map);
-    this.putBestLocationAttractedClientsOnMap(map, bestLocation);
+    bestLocation.color = 'blue';
+    this.drawAttractedArea(map, bestLocation);
   }
 
-  putBestLocationAttractedClientsOnMap(map: Map, bestLocation) {
+  drawAttractedArea(map: Map, place) {
     const coordinates = [];
-    for (const client of bestLocation.attractedClients) {
+    for (const client of place.attractedClients) {
       coordinates.push([client.latitude, client.longitude]);
     }
 
-    coordinates.push([bestLocation.latitude, bestLocation.longitude]);
+    coordinates.push([place.latitude, place.longitude]);
     console.log(coordinates);
     const result = monotoneChainConvexHull(coordinates);
     console.log(result);
 
     const attractedArea = polygon(result, {
-      color: 'blue',
+      color: place.color,
       weight: 0
     }).addTo(map);
   }
@@ -110,6 +113,8 @@ export class MapVisualizationComponent implements OnInit {
       });
 
       clientMarker.addTo(map);
+      facility.color = 'red';
+      this.drawAttractedArea(map, facility);
     }
   }
 }
