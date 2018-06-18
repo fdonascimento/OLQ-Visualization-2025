@@ -28,7 +28,7 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		candidates.removeCandidate(bestCandidate);
 		return result;
 	}
-
+	
 	private Candidate getBestCandidate(Candidate bestCandidate, Candidate newCandidate) {
 		if (bestCandidate == null || newCandidate.score() > bestCandidate.score()) {
 			bestCandidate = newCandidate;
@@ -46,10 +46,12 @@ public class CompetitiveLocationQuery implements LocationQuery {
 	private void calculateCandidateScore(Facilities facilities, Client client, Candidate candidate) {
 		for (Facility facility : facilities) {
 			if (facility.distance(client) < candidate.distance(client)) {
+				client.setClosestPlace(facility);
+				facility.addToScore(client.getWeight());
 				break;
 			}
 			candidate.addToScore(client.getWeight());
-			candidate.addAttractedClient(client);
+			client.setClosestPlace(candidate);
 		}
 	}
 }

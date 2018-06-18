@@ -8,12 +8,20 @@ import optimalLocation.query.domain.Facility;
 public class FacilityJson extends GeoLocationJson {
 
 	private List<ClientJson> attractedClients;
+	private Double score;
 	
 	public FacilityJson(Facility facility) {
 		super(facility);
 		if (facility != null) {
-//			this.attractedClients = facility.getAttractedClients().stream().map(client -> new ClientJson(client)).collect(Collectors.toList());
+			this.score = facility.score();
+			if (facility.getAttractedClients() != null) {
+				this.attractedClients = facility.getAttractedClients().stream().map(client -> new ClientJson(client)).collect(Collectors.toList());
+			}
 		}
+	}
+	
+	public Double getScore() {
+		return score;
 	}
 	
 	public List<ClientJson> getAttractedClients() {

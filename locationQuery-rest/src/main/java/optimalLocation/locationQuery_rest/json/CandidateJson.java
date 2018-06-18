@@ -14,7 +14,9 @@ public class CandidateJson extends GeoLocationJson {
 		super(candidate);
 		if (candidate != null) {
 			this.score = candidate.score();
-			this.attractedClients = candidate.getAttractedClients().stream().map(client -> new ClientJson(client)).collect(Collectors.toList());
+			if (candidate.getAttractedClients() != null) {
+				this.attractedClients = candidate.getAttractedClients().stream().map(client -> new ClientJson(client)).collect(Collectors.toList());
+			}
 		}
 	}
 
