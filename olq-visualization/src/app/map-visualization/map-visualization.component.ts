@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
-import { Map, circle, latLng, tileLayer, polygon } from 'leaflet';
+import { Map, circle, latLng, tileLayer, polygon, marker, icon, point } from 'leaflet';
 import { map as mapOperator } from 'rxjs/operators';
 import { BestLocationService } from '../best-location-service';
 import monotoneChainConvexHull from 'monotone-chain-convex-hull';
@@ -15,6 +15,7 @@ export class MapVisualizationComponent implements OnInit {
 
   private googleMaps;
   public options;
+  private totalScore: number;
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -38,6 +39,8 @@ export class MapVisualizationComponent implements OnInit {
   onMapReady(map: Map) {
     const result = this.bestLocationService.findBestLocation();
     result.subscribe(data => {
+      this.totalScore = this.calculateTotalScore(data);
+      console.log(this.totalScore);
       this.putCandidatesOnMap(map, data.candidates);
       this.putBestLocationOnMap(map, data.bestLocation);
       this.putClientsOnMap(map, data.clients);
@@ -45,30 +48,70 @@ export class MapVisualizationComponent implements OnInit {
     });
   }
 
+  calculateTotalScore(data): number {
+    let totalScore = data.bestLocation.score;
+
+    for (const facility of data.facilities) {
+      totalScore += facility.score;
+    }
+
+    for (const candidate of data.candidates) {
+      totalScore += candidate.score;
+    }
+
+    return totalScore;
+  }
+
   putCandidatesOnMap(map: Map, candidates) {
     for (const candidate of candidates) {
-      const clientMarker = circle([candidate.latitude, candidate.longitude], {
+      const oldCandidateMarker = circle([candidate.latitude, candidate.longitude], {
         color: 'green',
         fillColor: 'lightgreen',
         fillOpacity: 0.5,
-        radius: 5
+        radius: this.getRadius(candidate.score)
       });
 
-      clientMarker.addTo(map);
+      const candidateAnchor = point(13, 13);
+
+      const candidateIcon = icon({
+        iconUrl: 'assets/images/marker.png',
+        iconAnchor: candidateAnchor
+      });
+
+      const candidateMarker = marker([candidate.latitude, candidate.longitude], {
+        icon: candidateIcon,
+      });
+
+      candidateMarker.bindPopup(`Latitude: ${candidate.latitude}<br>Longitude: ${candidate.longitude}`);
+      candidateMarker.addTo(map);
+      oldCandidateMarker.addTo(map);
       candidate.color = 'green';
       this.drawAttractedArea(map, candidate);
     }
   }
 
   putBestLocationOnMap(map: Map, bestLocation) {
-    const bestLocationMarker = circle([bestLocation.latitude, bestLocation.longitude], {
+    const oldBestLocationMarker = circle([bestLocation.latitude, bestLocation.longitude], {
       color: 'blue',
       fillColor: 'lightblue',
       fillOpacity: 0.5,
-      radius: 5
+      radius: this.getRadius(bestLocation.score)
     });
 
+    const bestLocationAnchor = point(13, 13);
+
+    const bestLocationIcon = icon({
+      iconUrl: 'assets/images/champion.png',
+      iconAnchor: bestLocationAnchor,
+    });
+
+    const bestLocationMarker = marker([bestLocation.latitude, bestLocation.longitude], {
+      icon: bestLocationIcon,
+    });
+
+    bestLocationMarker.bindPopup(`Latitude: ${bestLocation.latitude}<br>Longitude: ${bestLocation.longitude}`);
     bestLocationMarker.addTo(map);
+    oldBestLocationMarker.addTo(map);
     bestLocation.color = 'blue';
     this.drawAttractedArea(map, bestLocation);
   }
@@ -80,9 +123,7 @@ export class MapVisualizationComponent implements OnInit {
     }
 
     coordinates.push([place.latitude, place.longitude]);
-    console.log(coordinates);
     const result = monotoneChainConvexHull(coordinates);
-    console.log(result);
 
     const attractedArea = polygon(result, {
       color: place.color,
@@ -105,16 +146,33 @@ export class MapVisualizationComponent implements OnInit {
 
   putFacilitiesOnMap(map: Map, facilities) {
     for (const facility of facilities) {
-      const clientMarker = circle([facility.latitude, facility.longitude], {
+      const oldFacilityMarker = circle([facility.latitude, facility.longitude], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
-        radius: 5
+        radius: this.getRadius(facility.score)
       });
 
-      clientMarker.addTo(map);
+      const facilityAcnhor = point(13, 13);
+
+      const facilityIcon = icon({
+        iconUrl: 'assets/images/factory.png',
+        iconAnchor: facilityAcnhor
+      });
+
+      const facilityMarker = marker([facility.latitude, facility.longitude], {
+        icon: facilityIcon
+      });
+
+      facilityMarker.bindPopup(`Latitude: ${facility.latitude}<br>Longitude: ${facility.longitude}`);
+      facilityMarker.addTo(map);
+      oldFacilityMarker.addTo(map);
       facility.color = 'red';
       this.drawAttractedArea(map, facility);
     }
+  }
+
+  getRadius(score: number): number {
+    return ((100 * score) / this.totalScore) * 10;
   }
 }
