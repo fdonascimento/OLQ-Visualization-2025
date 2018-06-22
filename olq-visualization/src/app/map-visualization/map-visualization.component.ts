@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
-import { Map, circle, latLng, tileLayer, polygon, marker, icon, point } from 'leaflet';
-import { map as mapOperator } from 'rxjs/operators';
-import { BestLocationService } from '../best-location-service';
+import { circle, icon, latLng, Map, marker, point, polygon, tileLayer } from 'leaflet';
 import monotoneChainConvexHull from 'monotone-chain-convex-hull';
+import { BestLocationService } from '../best-location-service';
 
 @Component({
   selector: 'app-map-visualization',
@@ -71,11 +69,18 @@ export class MapVisualizationComponent implements OnInit {
         radius: this.getRadius(candidate.score)
       });
 
-      const candidateAnchor = point(13, 13);
+      // const candidateAnchor = point(13, 13);
+      const candidateAnchor = point(16, 16);
+
+      // const candidateIcon = icon({
+      //   iconUrl: 'assets/images/marker.png',
+      //   iconAnchor: candidateAnchor
+      // });
 
       const candidateIcon = icon({
-        iconUrl: 'assets/images/marker.png',
-        iconAnchor: candidateAnchor
+        iconUrl: 'assets/images/silver_medal.png',
+        iconAnchor: candidateAnchor,
+        iconSize: [33, 46]
       });
 
       const candidateMarker = marker([candidate.latitude, candidate.longitude], {
@@ -95,14 +100,15 @@ export class MapVisualizationComponent implements OnInit {
       color: 'blue',
       fillColor: 'lightblue',
       fillOpacity: 0.5,
-      radius: this.getRadius(bestLocation.score)
+      radius: this.getRadius(bestLocation.score),
     });
 
-    const bestLocationAnchor = point(13, 13);
+    const bestLocationAnchor = point(16, 16);
 
     const bestLocationIcon = icon({
-      iconUrl: 'assets/images/champion.png',
+      iconUrl: 'assets/images/gold_medal.png',
       iconAnchor: bestLocationAnchor,
+      iconSize: [33, 46]
     });
 
     const bestLocationMarker = marker([bestLocation.latitude, bestLocation.longitude], {
@@ -153,11 +159,18 @@ export class MapVisualizationComponent implements OnInit {
         radius: this.getRadius(facility.score)
       });
 
-      const facilityAcnhor = point(13, 13);
+      // const facilityAcnhor = point(13, 13);
+      const facilityAcnhor = point(16, 16);
+
+      // const facilityIcon = icon({
+      //   iconUrl: 'assets/images/factory.png',
+      //   iconAnchor: facilityAcnhor
+      // });
 
       const facilityIcon = icon({
-        iconUrl: 'assets/images/factory.png',
-        iconAnchor: facilityAcnhor
+        iconUrl: 'assets/images/bronze_medal.png',
+        iconAnchor: facilityAcnhor,
+        iconSize: [33, 46]
       });
 
       const facilityMarker = marker([facility.latitude, facility.longitude], {
