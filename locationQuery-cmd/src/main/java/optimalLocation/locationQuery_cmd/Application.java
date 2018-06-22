@@ -11,7 +11,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 import optimalLocation.configuration.YamlConfig;
 import optimalLocation.core.OptimalLocationQuery;
-import optimalLocation.query.Candidate;
+import optimalLocation.query.domain.Candidate;
+import optimalLocation.query.domain.LocationQueryResult;
 import optimalLocation.yaml.YamlReadException;
 import optimalLocation.yaml.YamlReader;
 
@@ -28,10 +29,11 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Candidate candidate = optimalLocationQuery.findBestLocation();
+		LocationQueryResult result = optimalLocationQuery.findBestLocation();
 		
-		System.out.printf("Latitude: %f\n", candidate.getLatitude());
-		System.out.printf("Longitude: %f\n", candidate.getLongitude());
+		Candidate bestCandidate = result.getBestCandidate();
+		System.out.printf("Latitude: %f\n", bestCandidate.getLatitude());
+		System.out.printf("Longitude: %f\n", bestCandidate.getLongitude());
 	}
 	
 	@Bean

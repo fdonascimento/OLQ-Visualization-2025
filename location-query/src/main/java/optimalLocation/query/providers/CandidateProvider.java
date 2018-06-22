@@ -1,6 +1,6 @@
 package optimalLocation.query.providers;
 
-import optimalLocation.query.Candidates;
+import optimalLocation.query.domain.Candidates;
 
 public interface CandidateProvider {
 

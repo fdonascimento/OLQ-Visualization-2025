@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import optimalLocation.core.OptimalLocationQuery;
-import optimalLocation.query.Candidate;
+import optimalLocation.locationQuery_rest.json.LocationQueryResultJson;
+import optimalLocation.query.domain.LocationQueryResult;
 
 @RestController
 public class OptimalLocationQueryController {
@@ -17,9 +18,9 @@ public class OptimalLocationQueryController {
 		this.optimalLocationQuery = optimalLocationQuery;
 	}
 	
-	@RequestMapping("/bestLocation")
-	public BestLocation bestLocation() {
-		Candidate candidate = optimalLocationQuery.findBestLocation();
-		return new BestLocation(candidate);
+	@RequestMapping("/findBestLocation")
+	public LocationQueryResultJson findBestLocation() {
+		LocationQueryResult result = optimalLocationQuery.findBestLocation();
+		return new LocationQueryResultJson(result);
 	}
 }

@@ -1,6 +1,11 @@
 package optimalLocation.query;
 
+import optimalLocation.query.domain.Candidates;
+import optimalLocation.query.domain.Clients;
+import optimalLocation.query.domain.Facilities;
+import optimalLocation.query.domain.LocationQueryResult;
+
 public interface LocationQuery {
 
-	Candidate run(Clients clients, Facilities facilities, Candidates candidates);
+	LocationQueryResult run(Clients clients, Facilities facilities, Candidates candidates);
 }

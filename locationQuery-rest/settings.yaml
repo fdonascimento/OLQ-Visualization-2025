@@ -3,10 +3,10 @@
 # The parameters must be set with the jar names without the extension.
 
 #The jar must be placed in the LocationQueries folder.
-locationQuery: CompetitiveLocation
+locationQuery: competitive-location-0.0.1-SNAPSHOT
 #The jar must be placed in the ClientProviders folder.
-clientProvider: ClientProviderFake
+clientProvider: client-provider-fake-0.0.1-SNAPSHOT
 #The jar must be placed in the FacilityProviders folder.
-facilityProvider: FacilityProviderFake
+facilityProvider: facility-provider-fake-0.0.1-SNAPSHOT
 #The jar must be placed in the CandidateProviders folder.
-candidateProvider: CandidateProviderFake
+candidateProvider: candidate-provider-fake-0.0.1-SNAPSHOT
