@@ -18,22 +18,15 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		result.setFacilities(facilities);
 		result.setCandidates(candidates);
 		
-		Candidate bestCandidate = null;
 		for (Candidate candidate : candidates) {
 			calculateCandidateScore(clients, facilities, candidate);
-			bestCandidate = getBestCandidate(bestCandidate, candidate);
+			result.setFirstBestCandidate(candidate);
 		}
 		
-		result.setBestCandidate(bestCandidate);
-		candidates.removeCandidate(bestCandidate);
+		candidates.removeCandidate(result.getFirstBestCandidate());
+		candidates.removeCandidate(result.getSecondBestCandidate());
+		candidates.removeCandidate(result.getThirdBestCandidate());
 		return result;
-	}
-	
-	private Candidate getBestCandidate(Candidate bestCandidate, Candidate newCandidate) {
-		if (bestCandidate == null || newCandidate.score() > bestCandidate.score()) {
-			bestCandidate = newCandidate;
-		}
-		return bestCandidate;
 	}
 
 	private void calculateCandidateScore(Clients clients, Facilities facilities, Candidate candidate) {

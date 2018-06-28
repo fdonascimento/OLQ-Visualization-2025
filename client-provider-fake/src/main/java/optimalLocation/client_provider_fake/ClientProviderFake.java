@@ -33,6 +33,39 @@ public class ClientProviderFake implements ClientProvider {
 		clients.addClient(-13.0074586, -38.513941, "Ondina"); //Ondina
 		clients.addClient(-12.993279, -38.5254765, "Vitória"); //Vitória
 		
+		//Coutos
+		clients.addClient(-12.8175967, -38.4854044, "São Tomé de Paripe");
+		clients.addClient(-12.824583, -38.47145 , "Paripe");
+		clients.addClient(-12.8633545, -38.4736719, "Periperi");
+		clients.addClient(-12.861071, -38.433227, "Valéria");
+		
+		//São Cristovão
+		clients.addClient(-12.8802195, -38.3599894, "Itinga");
+		clients.addClient(-12.9189829, -38.3126964, "Praia do Flamengo");
+		clients.addClient(-12.9432087, -38.3354611 , "Stella Maris");
+		clients.addClient(-12.9476043, -38.3629457, "Itapuã");
+		clients.addClient(-12.9414165, -38.3714894, "Alto do Coqueirinho");
+		clients.addClient(-12.9290087, -38.3749638, "Bairro da Paz");
+		clients.addClient(-12.9196847, -38.367496, "Mussurunga");
+		
+		//IAPI
+		clients.addClient(-12.9686897, -38.4741125, "Horto Bela Vista");
+		clients.addClient(-12.9639484, -38.4849824, "Cidade Nova");
+		clients.addClient(-12.9638509, -38.4906158, "Baixa de Quintas");
+		clients.addClient(-12.9581223, -38.4941411, "Caixa D'água");
+		clients.addClient(-12.9606564, -38.4835868, "Pau Miúdo");
+		clients.addClient(-12.9499279, -38.4886385, "Pero Vaz");
+		clients.addClient(-12.9493669, -38.4849418, "Santa Mônica");
+		clients.addClient(-12.9569389, -38.4739341, "Bom Retiro");
+		clients.addClient(-12.9452034, -38.4937522, "Liberdade");
+		
+		//Bonfim
+		clients.addClient(-12.9139097, -38.4952964, "Ribeira");
+		clients.addClient(-12.9297056, -38.5155687, "Monte Serrat");
+		clients.addClient(-12.9314525, -38.5122816, "Boa Viagem");
+		clients.addClient(-12.9223719, -38.4882178, "Lobato");
+
+		
 		return clients;
 	}
 }

@@ -34,10 +34,10 @@ public class CompetitiveLocationQueryTest {
 		
 		//then
 		GeoLocation expected = new GeoLocation(-12.9807739, -38.4332938); //Boca do Rio
-		assertThat(result.getBestCandidate().getLatitude()).as("The latitudes are not equals")
+		assertThat(result.getFirstBestCandidate().getLatitude()).as("The latitudes are not equals")
 															.isEqualTo(expected.getLatitude());
 		
-		assertThat(result.getBestCandidate().getLongitude()).as("The longitudes are not equals")
+		assertThat(result.getFirstBestCandidate().getLongitude()).as("The longitudes are not equals")
 															.isEqualTo(expected.getLongitude());
 	}
 }
