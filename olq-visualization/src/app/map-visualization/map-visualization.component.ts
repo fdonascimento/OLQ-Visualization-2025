@@ -69,19 +69,19 @@ export class MapVisualizationComponent implements OnInit {
         radius: this.getRadius(candidate.score)
       });
 
-      // const candidateAnchor = point(13, 13);
-      const candidateAnchor = point(16, 16);
-
-      // const candidateIcon = icon({
-      //   iconUrl: 'assets/images/marker.png',
-      //   iconAnchor: candidateAnchor
-      // });
+      const candidateAnchor = point(13, 13);
+      // const candidateAnchor = point(16, 16);
 
       const candidateIcon = icon({
-        iconUrl: 'assets/images/silver_medal.png',
-        iconAnchor: candidateAnchor,
-        iconSize: [33, 46]
+        iconUrl: 'assets/images/marker.png',
+        iconAnchor: candidateAnchor
       });
+
+      // const candidateIcon = icon({
+      //   iconUrl: 'assets/images/silver_medal.png',
+      //   iconAnchor: candidateAnchor,
+      //   iconSize: [33, 46]
+      // });
 
       const candidateMarker = marker([candidate.latitude, candidate.longitude], {
         icon: candidateIcon,
@@ -159,19 +159,19 @@ export class MapVisualizationComponent implements OnInit {
         radius: this.getRadius(facility.score)
       });
 
-      // const facilityAcnhor = point(13, 13);
-      const facilityAcnhor = point(16, 16);
-
-      // const facilityIcon = icon({
-      //   iconUrl: 'assets/images/factory.png',
-      //   iconAnchor: facilityAcnhor
-      // });
+      const facilityAcnhor = point(12, 14);
+      // const facilityAcnhor = point(16, 16);
 
       const facilityIcon = icon({
-        iconUrl: 'assets/images/bronze_medal.png',
-        iconAnchor: facilityAcnhor,
-        iconSize: [33, 46]
+        iconUrl: 'assets/images/factory.png',
+        iconAnchor: facilityAcnhor
       });
+
+      // const facilityIcon = icon({
+      //   iconUrl: 'assets/images/bronze_medal.png',
+      //   iconAnchor: facilityAcnhor,
+      //   iconSize: [33, 46]
+      // });
 
       const facilityMarker = marker([facility.latitude, facility.longitude], {
         icon: facilityIcon
