@@ -4,7 +4,9 @@ public class LocationQueryResult {
 	private Candidates candidates;
 	private Facilities facilities;
 	private Clients clients;
-	private Candidate bestCandidate;
+	private Candidate firstBestCandidate;
+	private Candidate secondBestCandidate;
+	private Candidate thirdBestCandidate;
 
 	public Candidates getCandidates() {
 		return candidates;
@@ -30,12 +32,35 @@ public class LocationQueryResult {
 		this.clients = clients;
 	}
 
-	public Candidate getBestCandidate() {
-		return bestCandidate;
+	public Candidate getFirstBestCandidate() {
+		return firstBestCandidate;
 	}
 
-	public void setBestCandidate(Candidate bestCandidate) {
-		this.bestCandidate = bestCandidate;
+	public void setFirstBestCandidate(Candidate newFirstBestCandidate) {
+		if (firstBestCandidate == null || newFirstBestCandidate.score() > firstBestCandidate.score()) {
+			setSecondBestCandidate(firstBestCandidate);
+			firstBestCandidate = newFirstBestCandidate;
+		}
 	}
 
+	public Candidate getSecondBestCandidate() {
+		return secondBestCandidate;
+	}
+
+	public void setSecondBestCandidate(Candidate newSecondBestCandidate) {
+		if (newSecondBestCandidate != null && (secondBestCandidate == null || newSecondBestCandidate.score() > secondBestCandidate.score())) {
+			setThirdBestCandidate(secondBestCandidate);
+			secondBestCandidate = newSecondBestCandidate;
+		}
+	}
+
+	public Candidate getThirdBestCandidate() {
+		return thirdBestCandidate;
+	}
+
+	public void setThirdBestCandidate(Candidate newThirdBestCandidate) {
+		if (newThirdBestCandidate !=null && (thirdBestCandidate == null || newThirdBestCandidate.score() > thirdBestCandidate.score())) {
+			thirdBestCandidate = newThirdBestCandidate;
+		}
+	}
 }

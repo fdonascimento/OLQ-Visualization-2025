@@ -31,7 +31,7 @@ public class Application implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		LocationQueryResult result = optimalLocationQuery.findBestLocation();
 		
-		Candidate bestCandidate = result.getBestCandidate();
+		Candidate bestCandidate = result.getFirstBestCandidate();
 		System.out.printf("Latitude: %f\n", bestCandidate.getLatitude());
 		System.out.printf("Longitude: %f\n", bestCandidate.getLongitude());
 	}

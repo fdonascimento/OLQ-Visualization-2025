@@ -7,8 +7,8 @@ import optimalLocation.query.domain.Facility;
 
 public class FacilityJson extends GeoLocationJson {
 
-	private List<ClientJson> attractedClients;
 	private Double score;
+	private List<ClientJson> attractedClients;
 	
 	public FacilityJson(Facility facility) {
 		super(facility);
