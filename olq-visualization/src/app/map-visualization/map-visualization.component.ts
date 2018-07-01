@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { circle, icon, latLng, Map, marker, point, polygon, tileLayer } from 'leaflet';
 import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 import { BestLocationService } from '../best-location-service';
+import { Place } from './Place';
 
 @Component({
   selector: 'app-map-visualization',
@@ -14,6 +15,8 @@ export class MapVisualizationComponent implements OnInit {
   private googleMaps;
   public options;
   private totalScore: number;
+  private lastPlaceClicked: Place;
+  private facilities: Array<Place>;
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -40,14 +43,18 @@ export class MapVisualizationComponent implements OnInit {
       this.totalScore = this.calculateTotalScore(data);
       console.log(this.totalScore);
       this.putCandidatesOnMap(map, data.candidates);
-      this.putBestLocationOnMap(map, data.bestLocation);
+      this.putFirstBestLocationOnMap(map, data.firstBestLocation);
+      this.putSecondBestLocationOnMap(map, data.secondBestLocation);
+      this.putThirdBestLocationOnMap(map, data.thirdBestLocation);
       this.putClientsOnMap(map, data.clients);
       this.putFacilitiesOnMap(map, data.facilities);
     });
   }
 
   calculateTotalScore(data): number {
-    let totalScore = data.bestLocation.score;
+    let totalScore = data.firstBestLocation.score;
+    totalScore += data.secondBestLocation.score;
+    totalScore += data.thirdBestLocation.score;
 
     for (const facility of data.facilities) {
       totalScore += facility.score;
@@ -63,63 +70,83 @@ export class MapVisualizationComponent implements OnInit {
   putCandidatesOnMap(map: Map, candidates) {
     for (const candidate of candidates) {
       const oldCandidateMarker = circle([candidate.latitude, candidate.longitude], {
-        color: 'green',
-        fillColor: 'lightgreen',
+        color: 'gray',
+        fillColor: 'lightgray',
         fillOpacity: 0.5,
         radius: this.getRadius(candidate.score)
       });
-
-      const candidateAnchor = point(13, 13);
-      // const candidateAnchor = point(16, 16);
-
-      const candidateIcon = icon({
-        iconUrl: 'assets/images/marker.png',
-        iconAnchor: candidateAnchor
-      });
-
-      // const candidateIcon = icon({
-      //   iconUrl: 'assets/images/silver_medal.png',
-      //   iconAnchor: candidateAnchor,
-      //   iconSize: [33, 46]
-      // });
-
-      const candidateMarker = marker([candidate.latitude, candidate.longitude], {
-        icon: candidateIcon,
-      });
-
-      candidateMarker.bindPopup(`Latitude: ${candidate.latitude}<br>Longitude: ${candidate.longitude}`);
-      candidateMarker.addTo(map);
       oldCandidateMarker.addTo(map);
-      candidate.color = 'green';
-      this.drawAttractedArea(map, candidate);
+
+      const place = new Place(candidate.latitude, candidate.longitude);
+      place.setIconUrl('assets/images/marker.png');
+      place.setIconAnchor(point(13, 17));
+      place.setAttractedClients(candidate.attractedClients);
+      this.drawPlace(map, place);
     }
   }
 
-  putBestLocationOnMap(map: Map, bestLocation) {
+  putFirstBestLocationOnMap(map: Map, bestLocation) {
     const oldBestLocationMarker = circle([bestLocation.latitude, bestLocation.longitude], {
       color: 'blue',
       fillColor: 'lightblue',
       fillOpacity: 0.5,
       radius: this.getRadius(bestLocation.score),
     });
-
-    const bestLocationAnchor = point(16, 16);
-
-    const bestLocationIcon = icon({
-      iconUrl: 'assets/images/gold_medal.png',
-      iconAnchor: bestLocationAnchor,
-      iconSize: [33, 46]
-    });
-
-    const bestLocationMarker = marker([bestLocation.latitude, bestLocation.longitude], {
-      icon: bestLocationIcon,
-    });
-
-    bestLocationMarker.bindPopup(`Latitude: ${bestLocation.latitude}<br>Longitude: ${bestLocation.longitude}`);
-    bestLocationMarker.addTo(map);
     oldBestLocationMarker.addTo(map);
-    bestLocation.color = 'blue';
-    this.drawAttractedArea(map, bestLocation);
+
+    const place = new Place(bestLocation.latitude, bestLocation.longitude);
+    place.setIconUrl('assets/images/gold_medal.png');
+    place.setIconAnchor(point(16, 16));
+    place.setIconSize([33, 46]);
+    place.setAttractedClients(bestLocation.attractedClients);
+    this.drawPlace(map, place);
+  }
+
+  putSecondBestLocationOnMap(map: Map, secondBestLocation) {
+    const oldBestLocationMarker = circle([secondBestLocation.latitude, secondBestLocation.longitude], {
+      color: 'blue',
+      fillColor: 'lightblue',
+      fillOpacity: 0.5,
+      radius: this.getRadius(secondBestLocation.score),
+    });
+    oldBestLocationMarker.addTo(map);
+
+    const place = new Place(secondBestLocation.latitude, secondBestLocation.longitude);
+    place.setIconUrl('assets/images/silver_medal.png');
+    place.setIconAnchor(point(16, 16));
+    place.setIconSize([33, 46]);
+    place.setAttractedClients(secondBestLocation.attractedClients);
+    this.drawPlace(map, place);
+  }
+
+  putThirdBestLocationOnMap(map: Map, thirdBestLocation) {
+    const oldBestLocationMarker = circle([thirdBestLocation.latitude, thirdBestLocation.longitude], {
+      color: 'blue',
+      fillColor: 'lightblue',
+      fillOpacity: 0.5,
+      radius: this.getRadius(thirdBestLocation.score),
+    });
+    oldBestLocationMarker.addTo(map);
+
+    const place = new Place(thirdBestLocation.latitude, thirdBestLocation.longitude);
+    place.setIconUrl('assets/images/bronze_medal.png');
+    place.setIconAnchor(point(16, 16));
+    place.setIconSize([33, 46]);
+    place.setAttractedClients(thirdBestLocation.attractedClients);
+    this.drawPlace(map, place);
+  }
+
+  drawPlace(map: Map, place: Place) {
+    const markerPlace = place.getMarker();
+    markerPlace.addTo(map);
+    markerPlace.on('click', event => {
+      console.log(place.getAttractedArea());
+      if (this.lastPlaceClicked != null) {
+        map.removeLayer(this.lastPlaceClicked.getAttractedArea());
+      }
+      place.getAttractedArea().addTo(map);
+      this.lastPlaceClicked = place;
+    });
   }
 
   drawAttractedArea(map: Map, place) {
@@ -131,7 +158,7 @@ export class MapVisualizationComponent implements OnInit {
     coordinates.push([place.latitude, place.longitude]);
     const result = monotoneChainConvexHull(coordinates);
 
-    const attractedArea = polygon(result, {
+    polygon(result, {
       color: place.color,
       weight: 0
     }).addTo(map);
@@ -150,38 +177,26 @@ export class MapVisualizationComponent implements OnInit {
     }
   }
 
-  putFacilitiesOnMap(map: Map, facilities) {
-    for (const facility of facilities) {
+  putFacilitiesOnMap(map: Map, facilitiesJson) {
+    this.facilities = new Array<Place>();
+    for (const facility of facilitiesJson) {
       const oldFacilityMarker = circle([facility.latitude, facility.longitude], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
         radius: this.getRadius(facility.score)
       });
-
-      const facilityAcnhor = point(12, 14);
-      // const facilityAcnhor = point(16, 16);
-
-      const facilityIcon = icon({
-        iconUrl: 'assets/images/factory.png',
-        iconAnchor: facilityAcnhor
-      });
-
-      // const facilityIcon = icon({
-      //   iconUrl: 'assets/images/bronze_medal.png',
-      //   iconAnchor: facilityAcnhor,
-      //   iconSize: [33, 46]
-      // });
-
-      const facilityMarker = marker([facility.latitude, facility.longitude], {
-        icon: facilityIcon
-      });
-
-      facilityMarker.bindPopup(`Latitude: ${facility.latitude}<br>Longitude: ${facility.longitude}`);
-      facilityMarker.addTo(map);
       oldFacilityMarker.addTo(map);
-      facility.color = 'red';
-      this.drawAttractedArea(map, facility);
+
+      const place = new Place(facility.latitude, facility.longitude);
+      place.setIconUrl('assets/images/factory32.png');
+      place.setIconAnchor(point(16, 18));
+      place.setColorArea('red');
+
+      const facilityMarker = place.getMarker();
+      facilityMarker.addTo(map);
+
+      this.facilities.push(place);
     }
   }
 
