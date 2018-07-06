@@ -140,13 +140,20 @@ export class MapVisualizationComponent implements OnInit {
     const markerPlace = place.getMarker();
     markerPlace.addTo(map);
     markerPlace.on('click', event => {
-      console.log(place.getAttractedArea());
       if (this.lastPlaceClicked != null) {
         map.removeLayer(this.lastPlaceClicked.getAttractedArea());
       }
       place.getAttractedArea().addTo(map);
       this.lastPlaceClicked = place;
+      this.updateFacilities(map);
     });
+  }
+
+  updateFacilities(map: Map) {
+    for (const facility of this.facilities) {
+      map.removeLayer(facility.getAttractedArea());
+      facility.getAttractedArea().addTo(map);
+    }
   }
 
   drawAttractedArea(map: Map, place) {
@@ -195,6 +202,7 @@ export class MapVisualizationComponent implements OnInit {
 
       const facilityMarker = place.getMarker();
       facilityMarker.addTo(map);
+      place.setAttractedClients(facility.attractedClients);
 
       this.facilities.push(place);
     }

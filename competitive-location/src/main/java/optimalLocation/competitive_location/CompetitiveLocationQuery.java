@@ -12,7 +12,7 @@ import optimalLocation.query.domain.LocationQueryResult;
 public class CompetitiveLocationQuery implements LocationQuery {
 
 	@Override
-	public LocationQueryResult run(Clients clients, Facilities facilities, Candidates candidates) {
+	public LocationQueryResult findBestLocation(Clients clients, Facilities facilities, Candidates candidates) {
 		LocationQueryResult result = new LocationQueryResult();
 		result.setClients(clients);
 		result.setFacilities(facilities);
@@ -28,7 +28,7 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		candidates.removeCandidate(result.getThirdBestCandidate());
 		return result;
 	}
-
+	
 	private void calculateCandidateScore(Clients clients, Facilities facilities, Candidate candidate) {
 		candidate.startScore();
 		for (Client client : clients) {
@@ -39,12 +39,11 @@ public class CompetitiveLocationQuery implements LocationQuery {
 	private void calculateCandidateScore(Facilities facilities, Client client, Candidate candidate) {
 		for (Facility facility : facilities) {
 			if (facility.distance(client) < candidate.distance(client)) {
-				client.setClosestPlace(facility);
-				facility.addToScore(client.getWeight());
 				break;
 			}
+			
 			candidate.addToScore(client.getWeight());
-			client.setClosestPlace(candidate);
+			candidate.addAttractedClient(client);
 		}
 	}
 }

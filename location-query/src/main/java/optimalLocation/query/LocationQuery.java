@@ -7,5 +7,5 @@ import optimalLocation.query.domain.LocationQueryResult;
 
 public interface LocationQuery {
 
-	LocationQueryResult run(Clients clients, Facilities facilities, Candidates candidates);
+	LocationQueryResult findBestLocation(Clients clients, Facilities facilities, Candidates candidates);
 }

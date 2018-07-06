@@ -13,7 +13,7 @@ import optimalLocation.query.domain.LocationQueryResult;
 public class CompetitiveLocationQueryTest {
 
 	@Test
-	public void run_foundBestCandidateCorrectly() {
+	public void findBestLocationTest() {
 		//given
 		Clients clients = new Clients();
 		clients.addClient(-12.9865552, -38.4372664); //Jardim Armação
@@ -30,7 +30,7 @@ public class CompetitiveLocationQueryTest {
 		
 		//when
 		CompetitiveLocationQuery query = new CompetitiveLocationQuery();
-		LocationQueryResult result = query.run(clients, facilities, candidates);
+		LocationQueryResult result = query.findBestLocation(clients, facilities, candidates);
 		
 		//then
 		GeoLocation expected = new GeoLocation(-12.9807739, -38.4332938); //Boca do Rio

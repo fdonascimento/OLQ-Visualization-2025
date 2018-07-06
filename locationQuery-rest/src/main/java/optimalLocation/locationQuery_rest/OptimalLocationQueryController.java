@@ -23,4 +23,10 @@ public class OptimalLocationQueryController {
 		LocationQueryResult result = optimalLocationQuery.findBestLocation();
 		return new LocationQueryResultJson(result);
 	}
+	
+	//RequestMapping with params example
+//	@RequestMapping("/attractedClients/{latitude}/{longitude}")
+//	public LocationQueryResultJson attractedClients(@PathVariable("latitude") double latitude, @PathVariable("latitude") double longitude) {
+//		return null;
+//	}
 }
