@@ -37,11 +37,15 @@ public class CompetitiveLocationQuery implements LocationQuery {
 	}
 	
 	private void calculateCandidateScore(Facilities facilities, Client client, Candidate candidate) {
+		boolean candidateIsTheClosestPlace = false;
 		for (Facility facility : facilities) {
 			if (facility.distance(client) < candidate.distance(client)) {
+				candidateIsTheClosestPlace = true;
 				break;
 			}
-			
+		}
+		
+		if (candidateIsTheClosestPlace) {
 			candidate.addToScore(client.getWeight());
 			candidate.addAttractedClient(client);
 		}
