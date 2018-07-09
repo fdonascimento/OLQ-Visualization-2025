@@ -41,7 +41,9 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		for (Facility facility : facilities) {
 			if (facility.distance(client) < candidate.distance(client)) {
 				candidateIsTheClosestPlace = false;
-				break;
+//				client.setClosestFacility(facility);
+			} else {
+//				facility.removeAttractedClient(client);
 			}
 		}
 		
