@@ -4,6 +4,8 @@ import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 import { BestLocationService } from '../best-location-service';
 import { Place } from './Place';
 
+// declare var HeatmapOverlay;
+
 @Component({
   selector: 'app-map-visualization',
   templateUrl: './map-visualization.component.html',
@@ -16,6 +18,16 @@ export class MapVisualizationComponent implements OnInit {
   public options;
   private totalScore: number;
   private lastPlaceClicked: Place;
+
+  // heatmapLayer = new HeatmapOverlay({
+  //   radius: 2,
+  //   maxOpacity: 0.8,
+  //   scaleRadius: true,
+  //   useLocalExtrema: true,
+  //   latField: 'lat',
+  //   lngField: 'lng',
+  //   valueField: 'count'
+  // });
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -164,12 +176,14 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   putClientsOnMap(map: Map, clients) {
+
     for (const client of clients) {
       const clientMarker = circle([client.latitude, client.longitude], {
-        color: 'black',
-        fillColor: 'lightblack',
+        color: 'red',
+        fillColor: 'red',
         fillOpacity: 0.5,
-        radius: 5
+        opacity: 0.5,
+        radius: 80,
       });
 
       clientMarker.addTo(map);
@@ -182,7 +196,7 @@ export class MapVisualizationComponent implements OnInit {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
-        radius: 5
+        radius: 10,
       });
       oldFacilityMarker.addTo(map);
 
