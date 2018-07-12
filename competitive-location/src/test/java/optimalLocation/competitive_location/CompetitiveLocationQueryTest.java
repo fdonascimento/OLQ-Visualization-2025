@@ -123,25 +123,23 @@ public class CompetitiveLocationQueryTest {
 		}
 	}
 	
-//	@Test
+	@Test
 	public void findBestLocation_2Facilities_correctFacilitiesClients() {
 		//given
 		Clients clientsFirstFacility = new Clients();
 		clientsFirstFacility.addClient(1., 1.);
 		clientsFirstFacility.addClient(1., 2.);
 		
-		Clients clientsCandidate = new Clients();
-		clientsCandidate.addClient(4., 1.);
-		clientsCandidate.addClient(4., 2.);
-		clientsCandidate.addClient(4., 3.);
-		
 		Clients clientsSecondFacility = new Clients();
 		clientsSecondFacility.addClient(3., 1.);
 		clientsSecondFacility.addClient(3., 2.);
 		clientsSecondFacility.addClient(3., 3.);
+
+		clientsSecondFacility.addClient(4., 1.);
+		clientsSecondFacility.addClient(4., 2.);
+		clientsSecondFacility.addClient(4., 3.);
 		
 		Clients clients = new Clients();
-		clients.merge(clientsCandidate);
 		clients.merge(clientsFirstFacility);
 		clients.merge(clientsSecondFacility);
 		
@@ -162,7 +160,7 @@ public class CompetitiveLocationQueryTest {
 		Facility secondFacility = iterator.next();
 		
 		assertThat(firstFacility.getAttractedClients()).hasSize(2);
-		assertThat(secondFacility.getAttractedClients()).hasSize(3);
+		assertThat(secondFacility.getAttractedClients()).hasSize(6);
 		
 		for (Client client : firstFacility.getAttractedClients()) {
 			assertThat(clientsFirstFacility.stream()).anyMatch(c -> c.equals(client));
