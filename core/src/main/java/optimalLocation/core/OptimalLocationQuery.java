@@ -44,6 +44,6 @@ public class OptimalLocationQuery {
 		Clients clients = clientProvider.getClients();
 		Candidates candidates = candidateProvider.getCandidates();
 		Facilities facilities = facilityProvider.getFacilities();
-		return locationQuery.run(clients, facilities, candidates);
+		return locationQuery.findBestLocation(clients, facilities, candidates);
 	}
 }

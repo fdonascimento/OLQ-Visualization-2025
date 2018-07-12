@@ -69,4 +69,11 @@ export class Place {
        }
        return this.marker;
    }
+
+   equals(other: Place): boolean {
+       if (other == null) {
+           return false;
+        }
+       return this.latitude === other.latitude && this.longitude === other.longitude;
+   }
 }

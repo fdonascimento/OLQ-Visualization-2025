@@ -17,6 +17,10 @@ public class Candidates implements Iterable<Candidate>{
 		candidates.add(new Candidate(latitude, longitude));
 	}
 	
+	public void addCandidate(Candidate candidate) {
+		candidates.add(candidate);
+	}
+	
 	public void addCandidate(Double latitude, Double longitude, String name) {
 		candidates.add(new Candidate(latitude, longitude, name));
 	}

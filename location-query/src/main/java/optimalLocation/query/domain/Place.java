@@ -1,17 +1,16 @@
 package optimalLocation.query.domain;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-public abstract class Place extends GeoLocation {
+public class Place extends GeoLocation {
 
-	private Double score;
-	private List<Client> attractedClients;
+	private Set<Client> attractedClients;
 	
 	public Place(Double latitude, Double longitude) {
 		super(latitude, longitude);
-		startScore();
+		this.attractedClients = new HashSet<>();
 	}
 	
 	public Place(Double latitude, Double longitude, String name) {
@@ -19,27 +18,12 @@ public abstract class Place extends GeoLocation {
 		super.setName(name);
 	}
 	
-	public void addToScore(Double weight) {
-		score += weight;
-	}
-
-	public Double score() {
-		return score;
-	}
-
-	public void startScore() {
-		score = 0.;
-	}
-	
 	public void addAttractedClient(Client client) {
-		if (attractedClients == null) {
-			this.attractedClients = new ArrayList<>();
-		}
 		this.attractedClients.add(client);
 	}
 	
-	public List<Client> getAttractedClients() {
-		return Collections.unmodifiableList(attractedClients);
+	public Set<Client> getAttractedClients() {
+		return Collections.unmodifiableSet(attractedClients);
 	}
 	
 	public void removeAttractedClient(Client client) {

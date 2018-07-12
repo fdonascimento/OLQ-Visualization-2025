@@ -11,14 +11,14 @@ import optimalLocation.configuration.YamlConfig;
 import optimalLocation.yaml.YamlReadException;
 import optimalLocation.yaml.YamlReader;
 
-@ComponentScan(value="optimalLocation")
+@ComponentScan(value = "optimalLocation")
 @SpringBootApplication
 public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-	
+
 	@Bean
 	public YamlConfig getYamlConfig() throws YamlReadException {
 		return YamlReader.readYaml(new File("settings.yaml"), YamlConfig.class);

@@ -4,6 +4,8 @@ import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 import { BestLocationService } from '../best-location-service';
 import { Place } from './Place';
 
+// declare var HeatmapOverlay;
+
 @Component({
   selector: 'app-map-visualization',
   templateUrl: './map-visualization.component.html',
@@ -16,7 +18,16 @@ export class MapVisualizationComponent implements OnInit {
   public options;
   private totalScore: number;
   private lastPlaceClicked: Place;
-  private facilities: Array<Place>;
+
+  // heatmapLayer = new HeatmapOverlay({
+  //   radius: 2,
+  //   maxOpacity: 0.8,
+  //   scaleRadius: true,
+  //   useLocalExtrema: true,
+  //   latField: 'lat',
+  //   lngField: 'lng',
+  //   valueField: 'count'
+  // });
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -55,10 +66,6 @@ export class MapVisualizationComponent implements OnInit {
     let totalScore = data.firstBestLocation.score;
     totalScore += data.secondBestLocation.score;
     totalScore += data.thirdBestLocation.score;
-
-    for (const facility of data.facilities) {
-      totalScore += facility.score;
-    }
 
     for (const candidate of data.candidates) {
       totalScore += candidate.score;
@@ -140,12 +147,16 @@ export class MapVisualizationComponent implements OnInit {
     const markerPlace = place.getMarker();
     markerPlace.addTo(map);
     markerPlace.on('click', event => {
-      console.log(place.getAttractedArea());
-      if (this.lastPlaceClicked != null) {
+      if (this.lastPlaceClicked != null || place.equals(this.lastPlaceClicked)) {
         map.removeLayer(this.lastPlaceClicked.getAttractedArea());
       }
-      place.getAttractedArea().addTo(map);
-      this.lastPlaceClicked = place;
+
+      if (place.equals(this.lastPlaceClicked)) {
+        this.lastPlaceClicked = null;
+      } else {
+        place.getAttractedArea().addTo(map);
+        this.lastPlaceClicked = place;
+      }
     });
   }
 
@@ -165,12 +176,14 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   putClientsOnMap(map: Map, clients) {
+
     for (const client of clients) {
       const clientMarker = circle([client.latitude, client.longitude], {
-        color: 'black',
-        fillColor: 'lightblack',
+        color: 'red',
+        fillColor: 'red',
         fillOpacity: 0.5,
-        radius: 5
+        opacity: 0.5,
+        radius: 80,
       });
 
       clientMarker.addTo(map);
@@ -178,13 +191,12 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   putFacilitiesOnMap(map: Map, facilitiesJson) {
-    this.facilities = new Array<Place>();
     for (const facility of facilitiesJson) {
       const oldFacilityMarker = circle([facility.latitude, facility.longitude], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
-        radius: this.getRadius(facility.score)
+        radius: 10,
       });
       oldFacilityMarker.addTo(map);
 
@@ -195,8 +207,6 @@ export class MapVisualizationComponent implements OnInit {
 
       const facilityMarker = place.getMarker();
       facilityMarker.addTo(map);
-
-      this.facilities.push(place);
     }
   }
 

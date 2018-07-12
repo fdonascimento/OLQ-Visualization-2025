@@ -81,4 +81,12 @@ public class GeoLocation {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		if (name != null) {
+			return name;
+		}
+		return super.toString();
+	}
 }

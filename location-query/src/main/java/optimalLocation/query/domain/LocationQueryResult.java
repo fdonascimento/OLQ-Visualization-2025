@@ -1,4 +1,5 @@
 package optimalLocation.query.domain;
+
 public class LocationQueryResult {
 
 	private Candidates candidates;
