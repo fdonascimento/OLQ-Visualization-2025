@@ -20,3 +20,9 @@ locationQuery-cmd/target/
 locationQuery-rest/target/
 core/target/
 location-query/target/
+
+client-provider-txt/salvador_city\.txt
+
+locationQuery-rest/ClientProviders/
+
+locationQuery-cmd/ClientProviders/
