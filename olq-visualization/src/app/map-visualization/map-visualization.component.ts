@@ -110,37 +110,41 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   putSecondBestLocationOnMap(map: Map, secondBestLocation) {
-    const oldBestLocationMarker = circle([secondBestLocation.latitude, secondBestLocation.longitude], {
-      color: 'blue',
-      fillColor: 'lightblue',
-      fillOpacity: 0.5,
-      radius: this.getRadius(secondBestLocation.score),
-    });
-    oldBestLocationMarker.addTo(map);
+    if (secondBestLocation != null) {
+      const oldBestLocationMarker = circle([secondBestLocation.latitude, secondBestLocation.longitude], {
+        color: 'blue',
+        fillColor: 'lightblue',
+        fillOpacity: 0.5,
+        radius: this.getRadius(secondBestLocation.score),
+      });
+      oldBestLocationMarker.addTo(map);
 
-    const place = new Place(secondBestLocation.latitude, secondBestLocation.longitude);
-    place.setIconUrl('assets/images/silver_medal.png');
-    place.setIconAnchor(point(16, 16));
-    place.setIconSize([33, 46]);
-    place.setAttractedClients(secondBestLocation.attractedClients);
-    this.drawPlace(map, place);
+      const place = new Place(secondBestLocation.latitude, secondBestLocation.longitude);
+      place.setIconUrl('assets/images/silver_medal.png');
+      place.setIconAnchor(point(16, 16));
+      place.setIconSize([33, 46]);
+      place.setAttractedClients(secondBestLocation.attractedClients);
+      this.drawPlace(map, place);
+    }
   }
 
   putThirdBestLocationOnMap(map: Map, thirdBestLocation) {
-    const oldBestLocationMarker = circle([thirdBestLocation.latitude, thirdBestLocation.longitude], {
-      color: 'blue',
-      fillColor: 'lightblue',
-      fillOpacity: 0.5,
-      radius: this.getRadius(thirdBestLocation.score),
-    });
-    oldBestLocationMarker.addTo(map);
+    if (thirdBestLocation != null && thirdBestLocation.latitude != null && thirdBestLocation.longitude != null) {
+      const oldBestLocationMarker = circle([thirdBestLocation.latitude, thirdBestLocation.longitude], {
+        color: 'blue',
+        fillColor: 'lightblue',
+        fillOpacity: 0.5,
+        radius: this.getRadius(thirdBestLocation.score),
+      });
+      oldBestLocationMarker.addTo(map);
 
-    const place = new Place(thirdBestLocation.latitude, thirdBestLocation.longitude);
-    place.setIconUrl('assets/images/bronze_medal.png');
-    place.setIconAnchor(point(16, 16));
-    place.setIconSize([33, 46]);
-    place.setAttractedClients(thirdBestLocation.attractedClients);
-    this.drawPlace(map, place);
+      const place = new Place(thirdBestLocation.latitude, thirdBestLocation.longitude);
+      place.setIconUrl('assets/images/bronze_medal.png');
+      place.setIconAnchor(point(16, 16));
+      place.setIconSize([33, 46]);
+      place.setAttractedClients(thirdBestLocation.attractedClients);
+      this.drawPlace(map, place);
+    }
   }
 
   drawPlace(map: Map, place: Place) {
