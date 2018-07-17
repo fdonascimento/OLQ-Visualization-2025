@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>competitive-location</artifactId>
-	<packaging>jar</packaging>
+	<groupId>fagner</groupId>
+	<artifactId>client-provider-txt</artifactId>
 
-	<name>competitive-location</name>
-	<url>http://maven.apache.org</url>
+	<name>client-provider-txt</name>
+	<description>Add project description here</description>
 
 	<parent>
 		<groupId>optimalLocation</groupId>
@@ -15,7 +15,27 @@
 		<relativePath>../parent</relativePath>
 	</parent>
 
+	<properties>
+		<commons.codec.version>1.9</commons.codec.version>
+		<commons.io.version>2.6</commons.io.version>
+	</properties>
+
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons.io.version}</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons.codec.version}</version>
+		</dependency>
+
 		<!--This dependency is necessary to write tests using junit5 -->
 		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
 		<dependency>
@@ -25,7 +45,8 @@
 			<scope>test</scope>
 		</dependency>
 
-	<!--This dependency is necessary to run junit5 on IDE. In this case on the Eclipse  -->
+		<!--This dependency is necessary to run junit5 on IDE. In this case on 
+			the Eclipse -->
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
@@ -49,28 +70,28 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>optimalLocation</groupId>
 			<artifactId>query</artifactId>
 			<version>${location.query.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
 
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.19</version>
 				<dependencies>
-					<!--This dependency is necessary to run junit5 with maven. The tests will be run when the project is built by maven.  -->
+					<!--This dependency is necessary to run junit5 with maven. The tests 
+						will be run when the project is built by maven. -->
 					<dependency>
 						<groupId>org.junit.platform</groupId>
 						<artifactId>junit-platform-surefire-provider</artifactId>
@@ -78,15 +99,28 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			
+
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-jar-plugin</artifactId>
-		        <version>3.1.0</version>
-		        <configuration>
-		          <outputDirectory>../libs/LocationQueries</outputDirectory>
-		        </configuration>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<source>1.8</source>
+					<target>1.8</target>
+					<outputDirectory>../libs/ClientProviders</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
