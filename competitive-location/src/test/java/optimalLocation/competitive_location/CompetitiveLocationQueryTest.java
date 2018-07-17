@@ -39,10 +39,10 @@ public class CompetitiveLocationQueryTest {
 		
 		//then
 		GeoLocation expected = new GeoLocation(-12.9807739, -38.4332938); //Boca do Rio
-		assertThat(result.getFirstBestCandidate().getLatitude()).as("The latitudes are not equals")
+		assertThat(result.getBestCandidate().getLatitude()).as("The latitudes are not equals")
 															.isEqualTo(expected.getLatitude());
 		
-		assertThat(result.getFirstBestCandidate().getLongitude()).as("The longitudes are not equals")
+		assertThat(result.getBestCandidate().getLongitude()).as("The longitudes are not equals")
 															.isEqualTo(expected.getLongitude());
 	}
 	
@@ -74,7 +74,7 @@ public class CompetitiveLocationQueryTest {
 		
 		//then
 		Candidate bestLocationExpected = new Candidate(4.,  0.);
-		Candidate bestLocation = result.getFirstBestCandidate();
+		Candidate bestLocation = result.getBestCandidate();
 		assertThat(bestLocation.getLatitude()).as("The latitudes are not equals")
 															.isEqualTo(bestLocationExpected.getLatitude());
 		
@@ -116,7 +116,7 @@ public class CompetitiveLocationQueryTest {
 		LocationQueryResult result = query.findBestLocation(clients, facilities, candidates);
 		
 		//then
-		Candidate bestLocation = result.getFirstBestCandidate();
+		Candidate bestLocation = result.getBestCandidate();
 		assertThat(bestLocation.getAttractedClients()).hasSize(3);
 		for (Client client : bestLocation.getAttractedClients()) {
 			assertThat(clientsCandidate.stream()).anyMatch(c -> c.equals(client));

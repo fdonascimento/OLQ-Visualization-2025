@@ -1,29 +1,24 @@
-import { Icon, icon, marker, Marker, point, polygon, Polygon, Point, PointExpression } from 'leaflet';
+import { Icon, Circle, circle, marker, Marker, point, polygon, Polygon, Point, PointExpression } from 'leaflet';
 import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 
 export class Place {
-    private icon: Icon;
     private attractedArea: Polygon;
-    private colorArea;
-    private marker: Marker;
-    private iconUrl: string;
-    private iconAnchor: Point;
-    private iconSize: PointExpression;
+    private colorArea: string;
+    private colorMarker: string;
+    private marker: Circle;
 
     constructor(private latitude: number, private longitude: number) {
         this.colorArea = 'blue';
     }
 
     private createMarker(): void {
-        this.icon = icon({
-            iconUrl: this.iconUrl,
-            iconAnchor: this.iconAnchor,
-            iconSize: this.iconSize
-        });
-
-        this.marker = marker([this.latitude, this.longitude], {
-            icon: this.icon,
-        });
+        this.marker =  circle([this.latitude, this.longitude], {
+            color: this.colorMarker,
+            fillOpacity: 0.8,
+            opacity: 1,
+            radius: 250,
+            weight: 1
+          });
 
         this.marker.bindTooltip(`Latitude: ${this.latitude}<br>Longitude: ${this.longitude}`);
     }
@@ -43,27 +38,19 @@ export class Place {
         });
     }
 
-    setIconUrl(iconUrl: string): void {
-        this.iconUrl = iconUrl;
-    }
-
-    setIconAnchor(iconAnchor: Point): void {
-        this.iconAnchor = iconAnchor;
-    }
-
-    setIconSize(iconSize: PointExpression): void {
-        this.iconSize = iconSize;
-    }
-
     setColorArea(color: string) {
         this.colorArea = color;
+    }
+
+    setColorMarker(colorMarker: string) {
+        this.colorMarker = colorMarker;
     }
 
    getAttractedArea(): Polygon {
        return this.attractedArea;
    }
 
-   getMarker(): Marker {
+   getMarker(): Circle {
        if (this.marker == null) {
            this.createMarker();
        }

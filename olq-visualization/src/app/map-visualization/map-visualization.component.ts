@@ -19,16 +19,6 @@ export class MapVisualizationComponent implements OnInit {
   private totalScore: number;
   private lastPlaceClicked: Place;
 
-  // heatmapLayer = new HeatmapOverlay({
-  //   radius: 2,
-  //   maxOpacity: 0.8,
-  //   scaleRadius: true,
-  //   useLocalExtrema: true,
-  //   latField: 'lat',
-  //   lngField: 'lng',
-  //   valueField: 'count'
-  // });
-
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
     this.googleMaps = tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
@@ -53,19 +43,15 @@ export class MapVisualizationComponent implements OnInit {
     result.subscribe(data => {
       this.totalScore = this.calculateTotalScore(data);
       console.log(this.totalScore);
-      this.putCandidatesOnMap(map, data.candidates);
-      this.putFirstBestLocationOnMap(map, data.firstBestLocation);
-      this.putSecondBestLocationOnMap(map, data.secondBestLocation);
-      this.putThirdBestLocationOnMap(map, data.thirdBestLocation);
       this.putClientsOnMap(map, data.clients);
+      this.putCandidatesOnMap(map, data.candidates);
+      this.putBestLocationOnMap(map, data.firstBestLocation);
       this.putFacilitiesOnMap(map, data.facilities);
     });
   }
 
   calculateTotalScore(data): number {
     let totalScore = data.firstBestLocation.score;
-    totalScore += data.secondBestLocation.score;
-    totalScore += data.thirdBestLocation.score;
 
     for (const candidate of data.candidates) {
       totalScore += candidate.score;
@@ -76,53 +62,24 @@ export class MapVisualizationComponent implements OnInit {
 
   putCandidatesOnMap(map: Map, candidates) {
     for (const candidate of candidates) {
-      const oldCandidateMarker = circle([candidate.latitude, candidate.longitude], {
-        color: 'gray',
-        fillColor: 'lightgray',
-        fillOpacity: 0.5,
-        radius: this.getRadius(candidate.score)
-      });
-      oldCandidateMarker.addTo(map);
-
       const place = new Place(candidate.latitude, candidate.longitude);
-      place.setIconUrl('assets/images/marker.png');
-      place.setIconAnchor(point(13, 17));
+      place.setColorMarker('blue');
       place.setAttractedClients(candidate.attractedClients);
       this.drawPlace(map, place);
     }
   }
 
-  putFirstBestLocationOnMap(map: Map, bestLocation) {
-    const oldBestLocationMarker = circle([bestLocation.latitude, bestLocation.longitude], {
-      color: 'blue',
-      fillColor: 'lightblue',
-      fillOpacity: 0.5,
-      radius: this.getRadius(bestLocation.score),
-    });
-    oldBestLocationMarker.addTo(map);
-
+  putBestLocationOnMap(map: Map, bestLocation) {
     const place = new Place(bestLocation.latitude, bestLocation.longitude);
-    place.setIconUrl('assets/images/gold_medal.png');
-    place.setIconAnchor(point(16, 16));
-    place.setIconSize([33, 46]);
+    place.setColorMarker('purple');
     place.setAttractedClients(bestLocation.attractedClients);
     this.drawPlace(map, place);
   }
 
   putSecondBestLocationOnMap(map: Map, secondBestLocation) {
     if (secondBestLocation != null) {
-      const oldBestLocationMarker = circle([secondBestLocation.latitude, secondBestLocation.longitude], {
-        color: 'blue',
-        fillColor: 'lightblue',
-        fillOpacity: 0.5,
-        radius: this.getRadius(secondBestLocation.score),
-      });
-      oldBestLocationMarker.addTo(map);
-
       const place = new Place(secondBestLocation.latitude, secondBestLocation.longitude);
-      place.setIconUrl('assets/images/silver_medal.png');
-      place.setIconAnchor(point(16, 16));
-      place.setIconSize([33, 46]);
+      place.setColorMarker('purple');
       place.setAttractedClients(secondBestLocation.attractedClients);
       this.drawPlace(map, place);
     }
@@ -130,18 +87,8 @@ export class MapVisualizationComponent implements OnInit {
 
   putThirdBestLocationOnMap(map: Map, thirdBestLocation) {
     if (thirdBestLocation != null && thirdBestLocation.latitude != null && thirdBestLocation.longitude != null) {
-      const oldBestLocationMarker = circle([thirdBestLocation.latitude, thirdBestLocation.longitude], {
-        color: 'blue',
-        fillColor: 'lightblue',
-        fillOpacity: 0.5,
-        radius: this.getRadius(thirdBestLocation.score),
-      });
-      oldBestLocationMarker.addTo(map);
-
       const place = new Place(thirdBestLocation.latitude, thirdBestLocation.longitude);
-      place.setIconUrl('assets/images/bronze_medal.png');
-      place.setIconAnchor(point(16, 16));
-      place.setIconSize([33, 46]);
+      place.setColorMarker('purple');
       place.setAttractedClients(thirdBestLocation.attractedClients);
       this.drawPlace(map, place);
     }
@@ -158,7 +105,9 @@ export class MapVisualizationComponent implements OnInit {
       if (place.equals(this.lastPlaceClicked)) {
         this.lastPlaceClicked = null;
       } else {
+        map.removeLayer(markerPlace);
         place.getAttractedArea().addTo(map);
+        markerPlace.addTo(map);
         this.lastPlaceClicked = place;
       }
     });
@@ -183,11 +132,11 @@ export class MapVisualizationComponent implements OnInit {
 
     for (const client of clients) {
       const clientMarker = circle([client.latitude, client.longitude], {
-        color: 'red',
-        fillColor: 'red',
+        color: 'green',
         fillOpacity: 0.5,
         opacity: 0.5,
         radius: 80,
+        weight: 0
       });
 
       clientMarker.addTo(map);
@@ -196,21 +145,13 @@ export class MapVisualizationComponent implements OnInit {
 
   putFacilitiesOnMap(map: Map, facilitiesJson) {
     for (const facility of facilitiesJson) {
-      const oldFacilityMarker = circle([facility.latitude, facility.longitude], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 10,
-      });
-      oldFacilityMarker.addTo(map);
-
       const place = new Place(facility.latitude, facility.longitude);
-      place.setIconUrl('assets/images/factory32.png');
-      place.setIconAnchor(point(16, 18));
-      place.setColorArea('red');
+      place.setColorMarker('red');
+      place.setAttractedClients(facility.attractedClients);
+      this.drawPlace(map, place);
 
-      const facilityMarker = place.getMarker();
-      facilityMarker.addTo(map);
+      // const facilityMarker = place.getMarker();
+      // facilityMarker.addTo(map);
     }
   }
 

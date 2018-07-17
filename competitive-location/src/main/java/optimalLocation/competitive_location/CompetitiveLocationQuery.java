@@ -20,12 +20,9 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		
 		for (Candidate candidate : candidates) {
 			calculateCandidateScore(clients, facilities, candidate);
-			result.setFirstBestCandidate(candidate);
+			result.setBestCandidate(candidate);
 		}
 		
-		candidates.removeCandidate(result.getFirstBestCandidate());
-		candidates.removeCandidate(result.getSecondBestCandidate());
-		candidates.removeCandidate(result.getThirdBestCandidate());
 		return result;
 	}
 	
