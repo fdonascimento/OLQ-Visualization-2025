@@ -24,7 +24,7 @@ public class Client extends GeoLocation {
 	}
 	
 	public void setClosestFacility(Facility closestFacility) {
-		if (this.closestFacility == null || closestFacility.distance(this) < this.closestFacility.distance(this)) {
+		if (this.closestFacility == null || closestFacility.distance(this) <= this.closestFacility.distance(this)) {
 			if (this.closestFacility != null) {
 				this.closestFacility.removeAttractedClient(this);
 			}
