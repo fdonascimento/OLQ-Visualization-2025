@@ -4,8 +4,6 @@ import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 import { BestLocationService } from '../best-location-service';
 import { Place } from './Place';
 
-// declare var HeatmapOverlay;
-
 @Component({
   selector: 'app-map-visualization',
   templateUrl: './map-visualization.component.html',
@@ -18,6 +16,7 @@ export class MapVisualizationComponent implements OnInit {
   public options;
   private totalScore: number;
   private lastPlaceClicked: Place;
+  private candidates: Array<Place>;
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -33,6 +32,8 @@ export class MapVisualizationComponent implements OnInit {
       zoom: 12,
       center: latLng([ -12.919949, -38.419847 ])
     };
+
+    this.candidates = new Array<Place>();
   }
 
   ngOnInit() {
@@ -44,13 +45,13 @@ export class MapVisualizationComponent implements OnInit {
       this.totalScore = this.calculateTotalScore(data);
       console.log(this.totalScore);
       this.putClientsOnMap(map, data.clients);
+      this.putFacilitiesOnMap(map, data.facilities);
       this.putCandidatesOnMap(map, data.candidates);
       this.putBestLocationOnMap(map, data.firstBestLocation);
-      this.putFacilitiesOnMap(map, data.facilities);
     });
   }
 
-  calculateTotalScore(data): number {
+  private calculateTotalScore(data): number {
     let totalScore = data.firstBestLocation.score;
 
     for (const candidate of data.candidates) {
@@ -60,52 +61,35 @@ export class MapVisualizationComponent implements OnInit {
     return totalScore;
   }
 
-  putCandidatesOnMap(map: Map, candidates) {
+  private putCandidatesOnMap(map: Map, candidates) {
     for (const candidate of candidates) {
       const place = new Place(candidate.latitude, candidate.longitude);
       place.setColorMarker('blue');
       place.setAttractedClients(candidate.attractedClients);
+      this.candidates.push(place);
       this.drawPlace(map, place);
     }
   }
 
-  putBestLocationOnMap(map: Map, bestLocation) {
+  private putBestLocationOnMap(map: Map, bestLocation) {
     const place = new Place(bestLocation.latitude, bestLocation.longitude);
     place.setColorMarker('purple');
     place.setAttractedClients(bestLocation.attractedClients);
+    this.candidates.push(place);
     this.drawPlace(map, place);
   }
 
-  putSecondBestLocationOnMap(map: Map, secondBestLocation) {
-    if (secondBestLocation != null) {
-      const place = new Place(secondBestLocation.latitude, secondBestLocation.longitude);
-      place.setColorMarker('purple');
-      place.setAttractedClients(secondBestLocation.attractedClients);
-      this.drawPlace(map, place);
-    }
-  }
-
-  putThirdBestLocationOnMap(map: Map, thirdBestLocation) {
-    if (thirdBestLocation != null && thirdBestLocation.latitude != null && thirdBestLocation.longitude != null) {
-      const place = new Place(thirdBestLocation.latitude, thirdBestLocation.longitude);
-      place.setColorMarker('purple');
-      place.setAttractedClients(thirdBestLocation.attractedClients);
-      this.drawPlace(map, place);
-    }
-  }
-
-  drawPlace(map: Map, place: Place) {
+  private drawPlace(map: Map, place: Place) {
     const markerPlace = place.getMarker();
     markerPlace.addTo(map);
     markerPlace.on('click', event => {
-      if (this.lastPlaceClicked != null || place.equals(this.lastPlaceClicked)) {
+      if (this.lastPlaceClicked != null) {
         map.removeLayer(this.lastPlaceClicked.getAttractedArea());
-      }
-
-      if (place.equals(this.lastPlaceClicked)) {
-        this.lastPlaceClicked = null;
-      } else {
         map.removeLayer(markerPlace);
+        this.lastPlaceClicked = null;
+        this.showCandidates(map);
+      } else {
+        this.hideCandidates(map);
         place.getAttractedArea().addTo(map);
         markerPlace.addTo(map);
         this.lastPlaceClicked = place;
@@ -113,22 +97,19 @@ export class MapVisualizationComponent implements OnInit {
     });
   }
 
-  drawAttractedArea(map: Map, place) {
-    const coordinates = [];
-    for (const client of place.attractedClients) {
-      coordinates.push([client.latitude, client.longitude]);
+  private hideCandidates(map: Map) {
+    for (const candidate of this.candidates) {
+      map.removeLayer(candidate.getMarker());
     }
-
-    coordinates.push([place.latitude, place.longitude]);
-    const result = monotoneChainConvexHull(coordinates);
-
-    polygon(result, {
-      color: place.color,
-      weight: 0
-    }).addTo(map);
   }
 
-  putClientsOnMap(map: Map, clients) {
+  private showCandidates(map: Map) {
+    for (const candidate of this.candidates) {
+      candidate.getMarker().addTo(map);
+    }
+  }
+
+  private putClientsOnMap(map: Map, clients) {
 
     for (const client of clients) {
       const clientMarker = circle([client.latitude, client.longitude], {
@@ -143,19 +124,18 @@ export class MapVisualizationComponent implements OnInit {
     }
   }
 
-  putFacilitiesOnMap(map: Map, facilitiesJson) {
+  private putFacilitiesOnMap(map: Map, facilitiesJson) {
     for (const facility of facilitiesJson) {
       const place = new Place(facility.latitude, facility.longitude);
       place.setColorMarker('red');
       place.setAttractedClients(facility.attractedClients);
-      this.drawPlace(map, place);
 
-      // const facilityMarker = place.getMarker();
-      // facilityMarker.addTo(map);
+      place.getAttractedArea().addTo(map);
+      place.getMarker().addTo(map);
     }
   }
 
-  getRadius(score: number): number {
+  private getRadius(score: number): number {
     return ((100 * score) / this.totalScore) * 10;
   }
 }

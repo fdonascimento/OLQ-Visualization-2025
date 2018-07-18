@@ -19,8 +19,6 @@ export class Place {
             radius: 250,
             weight: 1
           });
-
-        this.marker.bindTooltip(`Latitude: ${this.latitude}<br>Longitude: ${this.longitude}`);
     }
 
     setAttractedClients(clients): void {
@@ -33,8 +31,8 @@ export class Place {
         const result = monotoneChainConvexHull(coordinates);
 
         this.attractedArea = polygon(result, {
-          color: this.colorArea,
-          weight: 0
+          color: this.colorMarker,
+          weight: 1
         });
     }
 
