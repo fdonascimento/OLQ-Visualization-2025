@@ -17,6 +17,8 @@ export class MapVisualizationComponent implements OnInit {
   private totalScore: number;
   private lastPlaceClicked: Place;
   private candidates: Array<Place>;
+  private facilities: Array<Place>;
+  private map: Map;
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -40,6 +42,7 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   onMapReady(map: Map) {
+    this.map = map;
     const result = this.bestLocationService.findBestLocation();
     result.subscribe(data => {
       this.totalScore = this.calculateTotalScore(data);
@@ -82,30 +85,35 @@ export class MapVisualizationComponent implements OnInit {
   private drawPlace(map: Map, place: Place) {
     const markerPlace = place.getMarker();
     markerPlace.addTo(map);
-    markerPlace.on('click', event => {
-      if (this.lastPlaceClicked != null) {
-        map.removeLayer(this.lastPlaceClicked.getAttractedArea());
-        map.removeLayer(markerPlace);
-        this.lastPlaceClicked = null;
-        this.showCandidates(map);
-      } else {
-        this.hideCandidates(map);
-        place.getAttractedArea().addTo(map);
-        markerPlace.addTo(map);
-        this.lastPlaceClicked = place;
-      }
-    });
+    markerPlace.on('click', event => this.seeAttractedArea(place, markerPlace));
   }
 
-  private hideCandidates(map: Map) {
-    for (const candidate of this.candidates) {
-      map.removeLayer(candidate.getMarker());
+  private seeAttractedArea(place: Place, markerPlace: any) {
+    if (this.lastPlaceClicked != null) {
+      this.map.removeLayer(this.lastPlaceClicked.getAttractedArea());
+      this.map.removeLayer(markerPlace);
+      this.lastPlaceClicked = null;
+      this.showCandidates();
+    } else {
+      this.hideCandidates();
+      place.getAttractedArea().addTo(this.map);
+      markerPlace.addTo(this.map);
+      this.lastPlaceClicked = place;
     }
   }
 
-  private showCandidates(map: Map) {
+  private seeInfo(place: Place, markerPlace: any) {
+
+  }
+  private hideCandidates() {
     for (const candidate of this.candidates) {
-      candidate.getMarker().addTo(map);
+      this.map.removeLayer(candidate.getMarker());
+    }
+  }
+
+  private showCandidates() {
+    for (const candidate of this.candidates) {
+      candidate.getMarker().addTo(this.map);
     }
   }
 
@@ -125,6 +133,7 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   private putFacilitiesOnMap(map: Map, facilitiesJson) {
+    this.facilities = new Array<Place>();
     for (const facility of facilitiesJson) {
       const place = new Place(facility.latitude, facility.longitude);
       place.setColorMarker('red');
@@ -132,10 +141,24 @@ export class MapVisualizationComponent implements OnInit {
 
       place.getAttractedArea().addTo(map);
       place.getMarker().addTo(map);
+      this.facilities.push(place);
     }
   }
 
   private getRadius(score: number): number {
     return ((100 * score) / this.totalScore) * 10;
+  }
+
+  public hideFacilitiesAttractedArea() {
+    for (const facility of this.facilities) {
+      this.map.removeLayer(facility.getAttractedArea());
+    }
+  }
+
+  public showFacilitiesAttractedArea() {
+    for (const facility of this.facilities) {
+      facility.getAttractedArea().addTo(this.map);
+      facility.getAttractedArea().bringToBack();
+    }
   }
 }
