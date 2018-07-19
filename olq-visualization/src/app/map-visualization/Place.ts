@@ -3,12 +3,10 @@ import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 
 export class Place {
     private attractedArea: Polygon;
-    private colorArea: string;
     private colorMarker: string;
     private marker: Circle;
 
     constructor(private latitude: number, private longitude: number) {
-        this.colorArea = 'blue';
     }
 
     private createMarker(): void {
@@ -36,10 +34,6 @@ export class Place {
         });
     }
 
-    setColorArea(color: string) {
-        this.colorArea = color;
-    }
-
     setColorMarker(colorMarker: string) {
         this.colorMarker = colorMarker;
     }
@@ -60,5 +54,9 @@ export class Place {
            return false;
         }
        return this.latitude === other.latitude && this.longitude === other.longitude;
+   }
+
+   getCoordinates() {
+       return [this.latitude, this.longitude];
    }
 }

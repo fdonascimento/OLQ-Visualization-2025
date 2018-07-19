@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { circle, icon, latLng, Map, marker, point, polygon, tileLayer } from 'leaflet';
-import monotoneChainConvexHull from 'monotone-chain-convex-hull';
+import { circle, latLng, Map, polyline, tileLayer } from 'leaflet';
 import { BestLocationService } from '../best-location-service';
 import { Place } from './Place';
 
@@ -51,6 +50,7 @@ export class MapVisualizationComponent implements OnInit {
       this.putFacilitiesOnMap(map, data.facilities);
       this.putCandidatesOnMap(map, data.candidates);
       this.putBestLocationOnMap(map, data.firstBestLocation);
+      this.drawLine();
     });
   }
 
@@ -160,5 +160,16 @@ export class MapVisualizationComponent implements OnInit {
       facility.getAttractedArea().addTo(this.map);
       facility.getAttractedArea().bringToBack();
     }
+  }
+
+  drawLine() {
+    const points = [];
+    points.push(this.candidates[0].getCoordinates());
+    points.push(this.candidates[1].getCoordinates());
+
+    const line = polyline(points, {
+      weight: 2,
+      color: 'yellow'
+    }).addTo(this.map);
   }
 }
