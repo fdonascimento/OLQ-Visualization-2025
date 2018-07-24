@@ -11,6 +11,7 @@ public class Place extends GeoLocation {
 	private Client farthestClient;
 	private double maxDistance;
 	private double minDistance;
+	private Double averageDistance;
 	
 	public Place(Double latitude, Double longitude) {
 		super(latitude, longitude);
@@ -73,5 +74,13 @@ public class Place extends GeoLocation {
 	
 	public double getMinDistance() {
 		return minDistance;
+	}
+	
+	public double getAverageDistance() {
+		if (averageDistance == null) {
+			double sum = attractedClients.stream().mapToDouble(client -> this.distance(client)).sum();
+			this.averageDistance = sum / attractedClients.size();
+		}
+		return averageDistance;
 	}
 }
