@@ -1,10 +1,12 @@
-import { Icon, Circle, circle, marker, Marker, point, polygon, Polygon, Point, PointExpression } from 'leaflet';
+import { Circle, circle, polygon, Polygon, polyline, Polyline } from 'leaflet';
 import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 
 export class Place {
     private attractedArea: Polygon;
     private colorMarker: string;
     private marker: Circle;
+    private maxDistance: Polyline;
+    private minDistance: Polyline;
 
     constructor(private latitude: number, private longitude: number) {
     }
@@ -32,6 +34,21 @@ export class Place {
           color: this.colorMarker,
           weight: 1
         });
+    }
+
+    setMaxDistance(client): void {
+        const points = [];
+        points.push([client.latitude, client.longitude]);
+        points.push(this.getCoordinates());
+
+        this.maxDistance = polyline(points, {
+        weight: 2,
+        color: 'yellow'
+        });
+    }
+
+    getMaxDistance() {
+        return this.maxDistance;
     }
 
     setColorMarker(colorMarker: string) {

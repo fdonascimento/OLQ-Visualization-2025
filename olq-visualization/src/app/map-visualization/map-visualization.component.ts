@@ -50,7 +50,6 @@ export class MapVisualizationComponent implements OnInit {
       this.putFacilitiesOnMap(map, data.facilities);
       this.putCandidatesOnMap(map, data.candidates);
       this.putBestLocationOnMap(map, data.firstBestLocation);
-      this.drawLine();
     });
   }
 
@@ -69,6 +68,7 @@ export class MapVisualizationComponent implements OnInit {
       const place = new Place(candidate.latitude, candidate.longitude);
       place.setColorMarker('blue');
       place.setAttractedClients(candidate.attractedClients);
+      place.setMaxDistance(candidate.farthestClient);
       this.candidates.push(place);
       this.drawPlace(map, place);
     }
@@ -78,6 +78,7 @@ export class MapVisualizationComponent implements OnInit {
     const place = new Place(bestLocation.latitude, bestLocation.longitude);
     place.setColorMarker('purple');
     place.setAttractedClients(bestLocation.attractedClients);
+    place.setMaxDistance(bestLocation.farthestClient);
     this.candidates.push(place);
     this.drawPlace(map, place);
   }
@@ -85,19 +86,21 @@ export class MapVisualizationComponent implements OnInit {
   private drawPlace(map: Map, place: Place) {
     const markerPlace = place.getMarker();
     markerPlace.addTo(map);
-    markerPlace.on('click', event => this.seeAttractedArea(place, markerPlace));
+    markerPlace.on('click', event => this.seeAttractedArea(place));
   }
 
-  private seeAttractedArea(place: Place, markerPlace: any) {
+  private seeAttractedArea(place: Place) {
     if (this.lastPlaceClicked != null) {
       this.map.removeLayer(this.lastPlaceClicked.getAttractedArea());
-      this.map.removeLayer(markerPlace);
+      this.map.removeLayer(place.getMarker());
+      this.map.removeLayer(place.getMaxDistance());
       this.lastPlaceClicked = null;
       this.showCandidates();
     } else {
       this.hideCandidates();
       place.getAttractedArea().addTo(this.map);
-      markerPlace.addTo(this.map);
+      place.getMaxDistance().addTo(this.map);
+      place.getMarker().addTo(this.map);
       this.lastPlaceClicked = place;
     }
   }
@@ -105,6 +108,7 @@ export class MapVisualizationComponent implements OnInit {
   private seeInfo(place: Place, markerPlace: any) {
 
   }
+
   private hideCandidates() {
     for (const candidate of this.candidates) {
       this.map.removeLayer(candidate.getMarker());
@@ -138,8 +142,10 @@ export class MapVisualizationComponent implements OnInit {
       const place = new Place(facility.latitude, facility.longitude);
       place.setColorMarker('red');
       place.setAttractedClients(facility.attractedClients);
+      place.setMaxDistance(facility.farthestClient);
 
       place.getAttractedArea().addTo(map);
+      place.getMaxDistance().addTo(map);
       place.getMarker().addTo(map);
       this.facilities.push(place);
     }
@@ -152,11 +158,14 @@ export class MapVisualizationComponent implements OnInit {
   public hideFacilitiesAttractedArea() {
     for (const facility of this.facilities) {
       this.map.removeLayer(facility.getAttractedArea());
+      this.map.removeLayer(facility.getMaxDistance());
     }
   }
 
   public showFacilitiesAttractedArea() {
     for (const facility of this.facilities) {
+      facility.getMaxDistance().addTo(this.map);
+      facility.getMaxDistance().bringToBack();
       facility.getAttractedArea().addTo(this.map);
       facility.getAttractedArea().bringToBack();
     }
