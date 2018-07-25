@@ -164,10 +164,9 @@ export class MapVisualizationComponent implements OnInit {
 
   public showFacilitiesAttractedArea() {
     for (const facility of this.facilities) {
-      facility.getMaxDistance().addTo(this.map);
-      facility.getMaxDistance().bringToBack();
       facility.getAttractedArea().addTo(this.map);
-      facility.getAttractedArea().bringToBack();
+      facility.getMaxDistance().addTo(this.map);
+      facility.getMarker().bringToFront();
     }
   }
 
