@@ -15,9 +15,10 @@ public class PlaceTest {
 		Place place = new Candidate(1D, 0D);
 		
 		//when
-		place.distance(middleClient);
-		place.distance(closestClient);
-		place.distance(farthestClient);
+		place.addAttractedClient(middleClient);
+		place.addAttractedClient(closestClient);
+		place.addAttractedClient(farthestClient);
+		place.calculateClosestAndFarthestClient();
 		
 		//then
 		assertThat(place.getClosestClient()).isEqualTo(closestClient);
@@ -31,9 +32,10 @@ public class PlaceTest {
 		Place place = new Candidate(1D, 0D);
 		
 		//when
-		place.distance(farthestClient);
-		place.distance(middleClient);
-		place.distance(closestClient);
+		place.addAttractedClient(farthestClient);
+		place.addAttractedClient(middleClient);
+		place.addAttractedClient(closestClient);
+		place.calculateClosestAndFarthestClient();
 		
 		//then
 		assertThat(place.getFarthestClient()).isEqualTo(farthestClient);

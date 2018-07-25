@@ -8,6 +8,7 @@ import optimalLocation.query.domain.Clients;
 import optimalLocation.query.domain.Facilities;
 import optimalLocation.query.domain.Facility;
 import optimalLocation.query.domain.LocationQueryResult;
+import optimalLocation.query.domain.Place;
 
 public class CompetitiveLocationQuery implements LocationQuery {
 
@@ -21,8 +22,10 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		for (Candidate candidate : candidates) {
 			calculateCandidateScore(clients, facilities, candidate);
 			result.setBestCandidate(candidate);
+			candidate.calculateClosestAndFarthestClient();
 		}
 		
+		facilities.forEach(Place::calculateClosestAndFarthestClient);
 		return result;
 	}
 	

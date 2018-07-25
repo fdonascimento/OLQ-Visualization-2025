@@ -35,31 +35,6 @@ public class Place extends GeoLocation {
 		attractedClients.remove(client);
 	}
 	
-	@Override
-	public Double distance(GeoLocation other) {
-		double distance = super.distance(other);
-		if (other instanceof Client) {
-			Client client = (Client) other;
-			setClosestClient(client, distance);
-			setFarthestClient(client, distance);
-		}
-		return distance;
-	}
-	
-	private void setClosestClient(Client client, double distance) {
-		if (this.closestClient == null || distance <= minDistance) {
-			this.closestClient = client;
-			this.minDistance = distance;
-		}
-	}
-	
-	private void setFarthestClient(Client client, double distance) {
-		if (this.farthestClient == null || distance >= maxDistance) {
-			this.farthestClient = client;
-			this.maxDistance = distance;
-		}
-	}
-	
 	public Client getClosestClient() {
 		return closestClient;
 	}
@@ -82,5 +57,20 @@ public class Place extends GeoLocation {
 			this.averageDistance = sum / attractedClients.size();
 		}
 		return averageDistance;
+	}
+	
+	public void calculateClosestAndFarthestClient() {
+		attractedClients.forEach(client -> {
+			double distance = this.distance(client);
+			if (this.closestClient == null || distance <= this.minDistance) {
+				this.closestClient = client;
+				this.minDistance = distance;
+			}
+			
+			if (this.farthestClient == null || distance >= this.maxDistance) {
+				this.farthestClient = client;
+				this.maxDistance = distance;
+			}
+		});
 	}
 }
