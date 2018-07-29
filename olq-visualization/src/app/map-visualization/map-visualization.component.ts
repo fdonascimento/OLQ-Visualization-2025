@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { circle, latLng, Map, polyline, tileLayer } from 'leaflet';
+import { circle, latLng, Map, marker, tileLayer, divIcon, Marker } from 'leaflet';
 import { BestLocationService } from '../best-location-service';
 import { Place } from './Place';
+import { Console } from '@angular/core/src/console';
 
 @Component({
   selector: 'app-map-visualization',
@@ -13,7 +14,8 @@ export class MapVisualizationComponent implements OnInit {
 
   private googleMaps;
   public options;
-  private lastPlaceClicked: Place;
+  private lastCandidateClicked: Place;
+  private lastFacilityClicked: Place;
   private candidates: Array<Place>;
   private facilities: Array<Place>;
   private map: Map;
@@ -47,6 +49,10 @@ export class MapVisualizationComponent implements OnInit {
       this.putFacilitiesOnMap(map, data.facilities);
       this.putCandidatesOnMap(data.candidates);
       this.putBestLocationOnMap(data.firstBestLocation);
+      this.map.on('click', event => {
+        // const latlng = map.mouseEventToLatLng(event.originalEvent);
+        // console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
+      });
     });
   }
 
@@ -62,10 +68,15 @@ export class MapVisualizationComponent implements OnInit {
 
   private putCandidateOnMap(candidate, color: string): void {
     const place = new Place(candidate.latitude, candidate.longitude);
+    place.setHeaderInfo('Candidate');
+    place.setMinDistance(candidate.minDistance);
+    place.setMaxDistance(candidate.maxDistance);
+    place.setAverageDistance(candidate.averageDistance);
+    place.setInfoLocation(marker([-12.976122149086684, -38.2485580444336]));
     place.setColorMarker(color);
     place.setAttractedClients(candidate.attractedClients);
-    place.setMaxDistance(candidate.farthestClient);
-    place.setMinDistance(candidate.closestClient);
+    place.setFarthestClient(candidate.farthestClient);
+    place.setClosestClient(candidate.closestClient);
     this.candidates.push(place);
     this.drawPlace(this.map, place);
   }
@@ -77,26 +88,47 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   private seeAttractedArea(place: Place) {
-    if (this.lastPlaceClicked != null) {
-      this.map.removeLayer(this.lastPlaceClicked.getAttractedArea());
-      this.map.removeLayer(place.getMarker());
-      this.map.removeLayer(place.getMaxDistance());
-      this.map.removeLayer(place.getMinDistance());
-      this.lastPlaceClicked = null;
+    if (this.lastCandidateClicked != null) {
+      this.removeCandidateLayers(place);
+      this.lastCandidateClicked = null;
       this.showCandidates();
     } else {
       this.hideCandidates();
-      place.getAttractedArea().addTo(this.map);
-      place.getAttractedArea().bringToBack();
-      place.getMarker().addTo(this.map);
-      place.getMaxDistance().addTo(this.map);
-      place.getMinDistance().addTo(this.map);
-      this.lastPlaceClicked = place;
+      this.showCandidateLayers(place);
+      this.lastCandidateClicked = place;
     }
   }
 
-  private seeInfo(place: Place, markerPlace: any) {
+  private removeCandidateLayers(candidate: Place): void {
+    this.map.removeLayer(this.lastCandidateClicked.getAttractedArea());
+    this.map.removeLayer(candidate.getMarker());
+    this.removeCandidateInfo(candidate);
+  }
 
+  private removeCandidateInfo(candidate: Place): void {
+    this.map.removeLayer(candidate.getFarthestClient());
+    this.map.removeLayer(candidate.getClosestClient());
+    this.map.removeLayer(candidate.getInfo());
+    this.map.removeLayer(candidate.getMaxRay());
+    this.map.removeLayer(candidate.getMinRay());
+  }
+
+  private showCandidateLayers(place: Place): void {
+    place.getAttractedArea().addTo(this.map);
+    place.getAttractedArea().bringToBack();
+    place.getMaxRay().addTo(this.map);
+    place.getMarker().addTo(this.map);
+    place.getMinRay().addTo(this.map);
+    place.getFarthestClient().addTo(this.map);
+    place.getClosestClient().addTo(this.map);
+    this.drawInfo(place.getInfo());
+  }
+
+  private drawInfo(info: Marker): void {
+    info.addTo(this.map);
+    info.getElement().style.width = '200px';
+    info.getElement().classList.remove('leaflet-div-icon');
+    info.getElement().getElementsByTagName('h4').item(0).style.marginBottom = '0';
   }
 
   private hideCandidates() {
@@ -130,36 +162,48 @@ export class MapVisualizationComponent implements OnInit {
     this.facilities = new Array<Place>();
     for (const facility of facilitiesJson) {
       const place = new Place(facility.latitude, facility.longitude);
+      place.setHeaderInfo('Facility');
+      place.setMaxDistance(facility.maxDistance);
+      place.setMinDistance(facility.minDistance);
+      place.setAverageDistance(facility.averageDistance);
+      place.setInfoLocation(marker([-12.91622950073752, -38.2485580444336]));
       place.setColorMarker('red');
       place.setAttractedClients(facility.attractedClients);
-      place.setMaxDistance(facility.farthestClient);
-      place.setMinDistance(facility.closestClient);
+      place.setFarthestClient(facility.farthestClient);
+      place.setClosestClient(facility.closestClient);
 
       place.getAttractedArea().addTo(map);
       place.getMarker().addTo(map);
 
-      place.getMarker().on('click', () => this.showFacilityLines(place));
+      place.getMarker().on('click', () => this.showFacilityInfo(place));
 
       this.facilities.push(place);
     }
   }
 
-  private showFacilityLines(facility: Place) {
-    if (facility.isClicked()) {
-      this.map.removeLayer(facility.getMaxDistance());
-      this.map.removeLayer(facility.getMinDistance());
+  private showFacilityInfo(facility: Place) {
+    if (this.lastFacilityClicked != null && this.lastFacilityClicked.equals(facility)) {
+      this.hideFacilityInfo(facility);
+      this.lastFacilityClicked = null;
     } else {
-      facility.getMaxDistance().addTo(this.map);
-      facility.getMinDistance().addTo(this.map);
+      this.hideFacilityInfo(this.lastFacilityClicked);
+      this.lastFacilityClicked = facility;
+      facility.getFarthestClient().addTo(this.map);
+      facility.getClosestClient().addTo(this.map);
+      this.drawInfo(facility.getInfo());
     }
-    facility.click();
+  }
+
+  private hideFacilityInfo(facility: Place): void {
+    if (facility != null) {
+      this.map.removeLayer(facility.getFarthestClient());
+      this.map.removeLayer(facility.getClosestClient());
+      this.map.removeLayer(facility.getInfo());
+    }
   }
 
   public hideFacilitiesAttractedArea() {
     for (const facility of this.facilities) {
-      facility.setClicked(false);
-      this.map.removeLayer(facility.getMaxDistance());
-      this.map.removeLayer(facility.getMinDistance());
       this.map.removeLayer(facility.getAttractedArea());
     }
   }

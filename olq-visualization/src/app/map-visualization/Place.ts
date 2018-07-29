@@ -1,13 +1,22 @@
-import { Circle, circle, polygon, Polygon, polyline, Polyline } from 'leaflet';
+import { Circle, Polygon, Polyline, LatLngExpression, Marker } from 'leaflet';
+import { circle, polygon, polyline, marker, divIcon } from 'leaflet';
 import monotoneChainConvexHull from 'monotone-chain-convex-hull';
 
 export class Place {
     private attractedArea: Polygon;
     private colorMarker: string;
     private marker: Circle;
-    private maxDistance: Polyline;
-    private minDistance: Polyline;
-    private clicked: boolean;
+    private maxDistanceLocation: Polyline;
+    private minDistanceLocation: Polyline;
+    private info: Marker;
+    private headerInfo: string;
+    private infoLocation: Marker;
+    private totalClients: number;
+    private maxDistance: number;
+    private minDistance: number;
+    private avgDistance: number;
+    private maxRay: Circle;
+    private minRay: Circle;
 
     constructor(private latitude: number, private longitude: number) {
     }
@@ -24,6 +33,7 @@ export class Place {
 
     setAttractedClients(clients): void {
         const coordinates = [];
+        this.totalClients = clients.length;
         for (const client of clients) {
           coordinates.push([client.latitude, client.longitude]);
         }
@@ -37,12 +47,34 @@ export class Place {
         });
     }
 
-    setMaxDistance(client): void {
-        this.maxDistance = this.getPolyline(client, 'yellow');
+    setFarthestClient(client): void {
+        this.maxDistanceLocation = this.getPolyline(client, 'yellow');
+        this.maxRay =  circle([this.latitude, this.longitude], {
+            color: 'yellow',
+            fill: null,
+            opacity: 1,
+            radius: this.maxDistance * 1000,
+            weight: 2
+          });
     }
 
-    setMinDistance(client): void {
-        this.minDistance = this.getPolyline(client, 'lightgreen');
+    setClosestClient(client): void {
+        this.minDistanceLocation = this.getPolyline(client, 'lightgreen');
+        this.minRay =  circle([this.latitude, this.longitude], {
+            color: 'lightgreen',
+            fill: null,
+            opacity: 1,
+            radius: this.minDistance * 1000,
+            weight: 2
+          });
+    }
+
+    getMaxRay(): Circle {
+        return this.maxRay;
+    }
+
+    getMinRay(): Circle {
+        return this.minRay;
     }
 
     private getPolyline(client, lineColor: string): Polyline {
@@ -56,12 +88,12 @@ export class Place {
         });
     }
 
-    getMaxDistance(): Polyline {
-        return this.maxDistance;
+    getFarthestClient(): Polyline {
+        return this.maxDistanceLocation;
     }
 
-    getMinDistance(): Polyline {
-        return this.minDistance;
+    getClosestClient(): Polyline {
+        return this.minDistanceLocation;
     }
 
     setColorMarker(colorMarker: string) {
@@ -79,6 +111,42 @@ export class Place {
        return this.marker;
    }
 
+   getInfo(): Marker {
+    if (this.info == null) {
+        this.createInfo();
+    }
+    return this.info;
+   }
+
+   setMaxDistance(maxDistance: number): void {
+       this.maxDistance = maxDistance;
+   }
+
+   setMinDistance(minDistance: number): void {
+       this.minDistance = minDistance;
+   }
+
+   setAverageDistance(avgDistance: number): void {
+       this.avgDistance = avgDistance;
+   }
+
+   private createInfo(): void {
+    const div = divIcon({
+        html: `<h4 style="webkit-margin-after: 0em;">${this.headerInfo} Info</h4>
+               Latitude: ${this.latitude}<br/>
+               Longitude: ${this.longitude}<br/>
+               Total clients: ${this.totalClients}<br/>
+               Min Distance: ${this.minDistance.toFixed(2)} km<br/>
+               Max Distance: ${this.maxDistance.toFixed(2)} km<br/>
+               Avg Distance: ${this.avgDistance.toFixed(2)} km`
+      });
+      this.info = this.infoLocation.setIcon(div);
+   }
+
+   setInfoLocation(infoLocation: Marker): void {
+       this.infoLocation = infoLocation;
+   }
+
    equals(other: Place): boolean {
        if (other == null) {
            return false;
@@ -86,19 +154,11 @@ export class Place {
        return this.latitude === other.latitude && this.longitude === other.longitude;
    }
 
-   getCoordinates() {
+   getCoordinates(): LatLngExpression {
        return [this.latitude, this.longitude];
    }
 
-   isClicked(): boolean {
-       return this.clicked;
-   }
-
-   click(): void {
-       this.clicked = !this.clicked;
-   }
-
-   setClicked(clicked: boolean): void {
-       this.clicked = clicked;
+   setHeaderInfo(header: string): void {
+       this.headerInfo = header;
    }
 }
