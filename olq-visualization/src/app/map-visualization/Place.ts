@@ -7,6 +7,7 @@ export class Place {
     private marker: Circle;
     private maxDistance: Polyline;
     private minDistance: Polyline;
+    private clicked: boolean;
 
     constructor(private latitude: number, private longitude: number) {
     }
@@ -37,18 +38,30 @@ export class Place {
     }
 
     setMaxDistance(client): void {
+        this.maxDistance = this.getPolyline(client, 'yellow');
+    }
+
+    setMinDistance(client): void {
+        this.minDistance = this.getPolyline(client, 'lightgreen');
+    }
+
+    private getPolyline(client, lineColor: string): Polyline {
         const points = [];
         points.push([client.latitude, client.longitude]);
         points.push(this.getCoordinates());
 
-        this.maxDistance = polyline(points, {
+       return polyline(points, {
         weight: 2,
-        color: 'yellow'
+        color: lineColor
         });
     }
 
-    getMaxDistance() {
+    getMaxDistance(): Polyline {
         return this.maxDistance;
+    }
+
+    getMinDistance(): Polyline {
+        return this.minDistance;
     }
 
     setColorMarker(colorMarker: string) {
@@ -75,5 +88,17 @@ export class Place {
 
    getCoordinates() {
        return [this.latitude, this.longitude];
+   }
+
+   isClicked(): boolean {
+       return this.clicked;
+   }
+
+   click(): void {
+       this.clicked = !this.clicked;
+   }
+
+   setClicked(clicked: boolean): void {
+       this.clicked = clicked;
    }
 }
