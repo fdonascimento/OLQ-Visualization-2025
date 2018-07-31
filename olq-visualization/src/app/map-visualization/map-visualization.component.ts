@@ -116,9 +116,9 @@ export class MapVisualizationComponent implements OnInit {
   private showCandidateLayers(place: Place): void {
     place.getAttractedArea().addTo(this.map);
     place.getAttractedArea().bringToBack();
-    place.getMaxRay().addTo(this.map);
+    // place.getMaxRay().addTo(this.map);
     place.getMarker().addTo(this.map);
-    place.getMinRay().addTo(this.map);
+    // place.getMinRay().addTo(this.map);
     place.getFarthestClient().addTo(this.map);
     place.getClosestClient().addTo(this.map);
     this.drawInfo(place.getInfo());
@@ -190,6 +190,8 @@ export class MapVisualizationComponent implements OnInit {
       this.lastFacilityClicked = facility;
       facility.getFarthestClient().addTo(this.map);
       facility.getClosestClient().addTo(this.map);
+      // facility.getMinRay().addTo(this.map);
+      // facility.getMaxRay().addTo(this.map);
       this.drawInfo(facility.getInfo());
     }
   }
@@ -199,6 +201,8 @@ export class MapVisualizationComponent implements OnInit {
       this.map.removeLayer(facility.getFarthestClient());
       this.map.removeLayer(facility.getClosestClient());
       this.map.removeLayer(facility.getInfo());
+      this.map.removeLayer(facility.getMaxRay());
+      this.map.removeLayer(facility.getMinRay());
     }
   }
 

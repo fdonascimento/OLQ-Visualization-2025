@@ -48,9 +48,10 @@ export class Place {
     }
 
     setFarthestClient(client): void {
-        this.maxDistanceLocation = this.getPolyline(client, 'yellow');
+        this.maxDistanceLocation = this.getPolyline(client, this.colorMarker);
         this.maxRay =  circle([this.latitude, this.longitude], {
-            color: 'yellow',
+            // color: 'yellow',
+            color: this.colorMarker,
             fill: null,
             opacity: 1,
             radius: this.maxDistance * 1000,
