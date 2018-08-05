@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { circle, icon, latLng, Map, marker, point, polygon, tileLayer } from 'leaflet';
-import monotoneChainConvexHull from 'monotone-chain-convex-hull';
+import { circle, latLng, Map, marker, tileLayer, divIcon, Marker } from 'leaflet';
 import { BestLocationService } from '../best-location-service';
 import { Place } from './Place';
-
-// declare var HeatmapOverlay;
+import { Console } from '@angular/core/src/console';
 
 @Component({
   selector: 'app-map-visualization',
@@ -16,18 +14,11 @@ export class MapVisualizationComponent implements OnInit {
 
   private googleMaps;
   public options;
-  private totalScore: number;
-  private lastPlaceClicked: Place;
-
-  // heatmapLayer = new HeatmapOverlay({
-  //   radius: 2,
-  //   maxOpacity: 0.8,
-  //   scaleRadius: true,
-  //   useLocalExtrema: true,
-  //   latField: 'lat',
-  //   lngField: 'lng',
-  //   valueField: 'count'
-  // });
+  private lastCandidateClicked: Place;
+  private lastFacilityClicked: Place;
+  private candidates: Array<Place>;
+  private facilities: Array<Place>;
+  private map: Map;
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -43,178 +34,189 @@ export class MapVisualizationComponent implements OnInit {
       zoom: 12,
       center: latLng([ -12.919949, -38.419847 ])
     };
+
+    this.candidates = new Array<Place>();
   }
 
   ngOnInit() {
   }
 
   onMapReady(map: Map) {
+    this.map = map;
     const result = this.bestLocationService.findBestLocation();
     result.subscribe(data => {
-      this.totalScore = this.calculateTotalScore(data);
-      console.log(this.totalScore);
-      this.putCandidatesOnMap(map, data.candidates);
-      this.putFirstBestLocationOnMap(map, data.firstBestLocation);
-      this.putSecondBestLocationOnMap(map, data.secondBestLocation);
-      this.putThirdBestLocationOnMap(map, data.thirdBestLocation);
       this.putClientsOnMap(map, data.clients);
       this.putFacilitiesOnMap(map, data.facilities);
+      this.putCandidatesOnMap(data.candidates);
+      this.putBestLocationOnMap(data.firstBestLocation);
+      this.map.on('click', event => {
+        // const latlng = map.mouseEventToLatLng(event.originalEvent);
+        // console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
+      });
     });
   }
 
-  calculateTotalScore(data): number {
-    let totalScore = data.firstBestLocation.score;
-    totalScore += data.secondBestLocation.score;
-    totalScore += data.thirdBestLocation.score;
-
-    for (const candidate of data.candidates) {
-      totalScore += candidate.score;
-    }
-
-    return totalScore;
-  }
-
-  putCandidatesOnMap(map: Map, candidates) {
+  private putCandidatesOnMap(candidates) {
     for (const candidate of candidates) {
-      const oldCandidateMarker = circle([candidate.latitude, candidate.longitude], {
-        color: 'gray',
-        fillColor: 'lightgray',
-        fillOpacity: 0.5,
-        radius: this.getRadius(candidate.score)
-      });
-      oldCandidateMarker.addTo(map);
-
-      const place = new Place(candidate.latitude, candidate.longitude);
-      place.setIconUrl('assets/images/marker.png');
-      place.setIconAnchor(point(13, 17));
-      place.setAttractedClients(candidate.attractedClients);
-      this.drawPlace(map, place);
+      this.putCandidateOnMap(candidate, 'blue');
     }
   }
 
-  putFirstBestLocationOnMap(map: Map, bestLocation) {
-    const oldBestLocationMarker = circle([bestLocation.latitude, bestLocation.longitude], {
-      color: 'blue',
-      fillColor: 'lightblue',
-      fillOpacity: 0.5,
-      radius: this.getRadius(bestLocation.score),
-    });
-    oldBestLocationMarker.addTo(map);
-
-    const place = new Place(bestLocation.latitude, bestLocation.longitude);
-    place.setIconUrl('assets/images/gold_medal.png');
-    place.setIconAnchor(point(16, 16));
-    place.setIconSize([33, 46]);
-    place.setAttractedClients(bestLocation.attractedClients);
-    this.drawPlace(map, place);
+  private putBestLocationOnMap(bestLocation) {
+    this.putCandidateOnMap(bestLocation, 'purple');
   }
 
-  putSecondBestLocationOnMap(map: Map, secondBestLocation) {
-    if (secondBestLocation != null) {
-      const oldBestLocationMarker = circle([secondBestLocation.latitude, secondBestLocation.longitude], {
-        color: 'blue',
-        fillColor: 'lightblue',
-        fillOpacity: 0.5,
-        radius: this.getRadius(secondBestLocation.score),
-      });
-      oldBestLocationMarker.addTo(map);
-
-      const place = new Place(secondBestLocation.latitude, secondBestLocation.longitude);
-      place.setIconUrl('assets/images/silver_medal.png');
-      place.setIconAnchor(point(16, 16));
-      place.setIconSize([33, 46]);
-      place.setAttractedClients(secondBestLocation.attractedClients);
-      this.drawPlace(map, place);
-    }
+  private putCandidateOnMap(candidate, color: string): void {
+    const place = new Place(candidate.latitude, candidate.longitude);
+    place.setHeaderInfo('Candidate');
+    place.setMinDistance(candidate.minDistance);
+    place.setMaxDistance(candidate.maxDistance);
+    place.setAverageDistance(candidate.averageDistance);
+    place.setInfoLocation(marker([-12.976122149086684, -38.2485580444336]));
+    place.setColorMarker(color);
+    place.setAttractedClients(candidate.attractedClients);
+    place.setFarthestClient(candidate.farthestClient);
+    place.setClosestClient(candidate.closestClient);
+    this.candidates.push(place);
+    this.drawPlace(this.map, place);
   }
 
-  putThirdBestLocationOnMap(map: Map, thirdBestLocation) {
-    if (thirdBestLocation != null && thirdBestLocation.latitude != null && thirdBestLocation.longitude != null) {
-      const oldBestLocationMarker = circle([thirdBestLocation.latitude, thirdBestLocation.longitude], {
-        color: 'blue',
-        fillColor: 'lightblue',
-        fillOpacity: 0.5,
-        radius: this.getRadius(thirdBestLocation.score),
-      });
-      oldBestLocationMarker.addTo(map);
-
-      const place = new Place(thirdBestLocation.latitude, thirdBestLocation.longitude);
-      place.setIconUrl('assets/images/bronze_medal.png');
-      place.setIconAnchor(point(16, 16));
-      place.setIconSize([33, 46]);
-      place.setAttractedClients(thirdBestLocation.attractedClients);
-      this.drawPlace(map, place);
-    }
-  }
-
-  drawPlace(map: Map, place: Place) {
+  private drawPlace(map: Map, place: Place) {
     const markerPlace = place.getMarker();
     markerPlace.addTo(map);
-    markerPlace.on('click', event => {
-      if (this.lastPlaceClicked != null || place.equals(this.lastPlaceClicked)) {
-        map.removeLayer(this.lastPlaceClicked.getAttractedArea());
-      }
-
-      if (place.equals(this.lastPlaceClicked)) {
-        this.lastPlaceClicked = null;
-      } else {
-        place.getAttractedArea().addTo(map);
-        this.lastPlaceClicked = place;
-      }
-    });
+    markerPlace.on('click', () => this.seeAttractedArea(place));
   }
 
-  drawAttractedArea(map: Map, place) {
-    const coordinates = [];
-    for (const client of place.attractedClients) {
-      coordinates.push([client.latitude, client.longitude]);
+  private seeAttractedArea(place: Place) {
+    if (this.lastCandidateClicked != null) {
+      this.removeCandidateLayers(place);
+      this.lastCandidateClicked = null;
+      this.showCandidates();
+    } else {
+      this.hideCandidates();
+      this.showCandidateLayers(place);
+      this.lastCandidateClicked = place;
     }
-
-    coordinates.push([place.latitude, place.longitude]);
-    const result = monotoneChainConvexHull(coordinates);
-
-    polygon(result, {
-      color: place.color,
-      weight: 0
-    }).addTo(map);
   }
 
-  putClientsOnMap(map: Map, clients) {
+  private removeCandidateLayers(candidate: Place): void {
+    this.map.removeLayer(this.lastCandidateClicked.getAttractedArea());
+    this.map.removeLayer(candidate.getMarker());
+    this.removeCandidateInfo(candidate);
+  }
+
+  private removeCandidateInfo(candidate: Place): void {
+    this.map.removeLayer(candidate.getFarthestClient());
+    this.map.removeLayer(candidate.getClosestClient());
+    this.map.removeLayer(candidate.getInfo());
+    this.map.removeLayer(candidate.getMaxRay());
+    this.map.removeLayer(candidate.getMinRay());
+  }
+
+  private showCandidateLayers(place: Place): void {
+    place.getAttractedArea().addTo(this.map);
+    place.getAttractedArea().bringToBack();
+    // place.getMaxRay().addTo(this.map);
+    place.getMarker().addTo(this.map);
+    // place.getMinRay().addTo(this.map);
+    place.getFarthestClient().addTo(this.map);
+    place.getClosestClient().addTo(this.map);
+    this.drawInfo(place.getInfo());
+  }
+
+  private drawInfo(info: Marker): void {
+    info.addTo(this.map);
+    info.getElement().style.width = '200px';
+    info.getElement().classList.remove('leaflet-div-icon');
+    info.getElement().getElementsByTagName('h4').item(0).style.marginBottom = '0';
+  }
+
+  private hideCandidates() {
+    for (const candidate of this.candidates) {
+      this.map.removeLayer(candidate.getMarker());
+    }
+  }
+
+  private showCandidates() {
+    for (const candidate of this.candidates) {
+      candidate.getMarker().addTo(this.map);
+    }
+  }
+
+  private putClientsOnMap(map: Map, clients) {
 
     for (const client of clients) {
       const clientMarker = circle([client.latitude, client.longitude], {
-        color: 'red',
-        fillColor: 'red',
+        color: 'green',
         fillOpacity: 0.5,
         opacity: 0.5,
         radius: 80,
+        weight: 0
       });
 
       clientMarker.addTo(map);
     }
   }
 
-  putFacilitiesOnMap(map: Map, facilitiesJson) {
+  private putFacilitiesOnMap(map: Map, facilitiesJson) {
+    this.facilities = new Array<Place>();
     for (const facility of facilitiesJson) {
-      const oldFacilityMarker = circle([facility.latitude, facility.longitude], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 10,
-      });
-      oldFacilityMarker.addTo(map);
-
       const place = new Place(facility.latitude, facility.longitude);
-      place.setIconUrl('assets/images/factory32.png');
-      place.setIconAnchor(point(16, 18));
-      place.setColorArea('red');
+      place.setHeaderInfo('Facility');
+      place.setMaxDistance(facility.maxDistance);
+      place.setMinDistance(facility.minDistance);
+      place.setAverageDistance(facility.averageDistance);
+      place.setInfoLocation(marker([-12.91622950073752, -38.2485580444336]));
+      place.setColorMarker('red');
+      place.setAttractedClients(facility.attractedClients);
+      place.setFarthestClient(facility.farthestClient);
+      place.setClosestClient(facility.closestClient);
 
-      const facilityMarker = place.getMarker();
-      facilityMarker.addTo(map);
+      place.getAttractedArea().addTo(map);
+      place.getMarker().addTo(map);
+
+      place.getMarker().on('click', () => this.showFacilityInfo(place));
+
+      this.facilities.push(place);
     }
   }
 
-  getRadius(score: number): number {
-    return ((100 * score) / this.totalScore) * 10;
+  private showFacilityInfo(facility: Place) {
+    if (this.lastFacilityClicked != null && this.lastFacilityClicked.equals(facility)) {
+      this.hideFacilityInfo(facility);
+      this.lastFacilityClicked = null;
+    } else {
+      this.hideFacilityInfo(this.lastFacilityClicked);
+      this.lastFacilityClicked = facility;
+      facility.getFarthestClient().addTo(this.map);
+      facility.getClosestClient().addTo(this.map);
+      // facility.getMinRay().addTo(this.map);
+      // facility.getMaxRay().addTo(this.map);
+      this.drawInfo(facility.getInfo());
+    }
+  }
+
+  private hideFacilityInfo(facility: Place): void {
+    if (facility != null) {
+      this.map.removeLayer(facility.getFarthestClient());
+      this.map.removeLayer(facility.getClosestClient());
+      this.map.removeLayer(facility.getInfo());
+      this.map.removeLayer(facility.getMaxRay());
+      this.map.removeLayer(facility.getMinRay());
+    }
+  }
+
+  public hideFacilitiesAttractedArea() {
+    for (const facility of this.facilities) {
+      this.map.removeLayer(facility.getAttractedArea());
+    }
+  }
+
+  public showFacilitiesAttractedArea() {
+    for (const facility of this.facilities) {
+      facility.getAttractedArea().addTo(this.map);
+      facility.getAttractedArea().bringToBack();
+      facility.getMarker();
+    }
   }
 }

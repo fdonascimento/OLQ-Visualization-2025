@@ -8,6 +8,7 @@ import optimalLocation.query.domain.Clients;
 import optimalLocation.query.domain.Facilities;
 import optimalLocation.query.domain.Facility;
 import optimalLocation.query.domain.LocationQueryResult;
+import optimalLocation.query.domain.Place;
 
 public class CompetitiveLocationQuery implements LocationQuery {
 
@@ -20,12 +21,11 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		
 		for (Candidate candidate : candidates) {
 			calculateCandidateScore(clients, facilities, candidate);
-			result.setFirstBestCandidate(candidate);
+			result.setBestCandidate(candidate);
+			candidate.calculateClosestAndFarthestClient();
 		}
 		
-		candidates.removeCandidate(result.getFirstBestCandidate());
-		candidates.removeCandidate(result.getSecondBestCandidate());
-		candidates.removeCandidate(result.getThirdBestCandidate());
+		facilities.forEach(Place::calculateClosestAndFarthestClient);
 		return result;
 	}
 	
@@ -39,11 +39,10 @@ public class CompetitiveLocationQuery implements LocationQuery {
 	private void calculateCandidateScore(Facilities facilities, Client client, Candidate candidate) {
 		boolean candidateIsTheClosestPlace = true;
 		for (Facility facility : facilities) {
+			client.setClosestFacility(facility);
+
 			if (facility.distance(client) < candidate.distance(client)) {
 				candidateIsTheClosestPlace = false;
-//				client.setClosestFacility(facility);
-			} else {
-//				facility.removeAttractedClient(client);
 			}
 		}
 		
