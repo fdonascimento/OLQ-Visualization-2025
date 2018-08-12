@@ -29,7 +29,7 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		LocationQueryResult result = optimalLocationQuery.findBestLocation();
+		LocationQueryResult result = optimalLocationQuery.findBestLocation(null);
 		
 		Candidate bestCandidate = result.getBestCandidate();
 		System.out.printf("Latitude: %f\n", bestCandidate.getLatitude());

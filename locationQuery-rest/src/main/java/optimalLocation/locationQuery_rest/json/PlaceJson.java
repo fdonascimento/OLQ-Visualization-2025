@@ -28,6 +28,10 @@ public class PlaceJson extends GeoLocationJson {
 			this.averageDistance = place.getAverageDistance();
 		}
 	}
+	
+	public PlaceJson(Double latitude, Double longitude) {
+		super(latitude, longitude);
+	}
 
 	public List<ClientJson> getAttractedClients() {
 		return attractedClients;
