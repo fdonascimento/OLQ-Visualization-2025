@@ -15,8 +15,6 @@ export class Place {
     private maxDistance: number;
     private minDistance: number;
     private avgDistance: number;
-    private maxRay: Circle;
-    private minRay: Circle;
 
     constructor(private latitude: number, private longitude: number) {
     }
@@ -48,34 +46,11 @@ export class Place {
     }
 
     setFarthestClient(client): void {
-        this.maxDistanceLocation = this.getPolyline(client, this.colorMarker);
-        this.maxRay =  circle([this.latitude, this.longitude], {
-            // color: 'yellow',
-            color: this.colorMarker,
-            fill: null,
-            opacity: 1,
-            radius: this.maxDistance * 1000,
-            weight: 2
-          });
+        this.maxDistanceLocation = this.getPolyline(client, 'yellow');
     }
 
     setClosestClient(client): void {
         this.minDistanceLocation = this.getPolyline(client, 'lightgreen');
-        this.minRay =  circle([this.latitude, this.longitude], {
-            color: 'lightgreen',
-            fill: null,
-            opacity: 1,
-            radius: this.minDistance * 1000,
-            weight: 2
-          });
-    }
-
-    getMaxRay(): Circle {
-        return this.maxRay;
-    }
-
-    getMinRay(): Circle {
-        return this.minRay;
     }
 
     private getPolyline(client, lineColor: string): Polyline {
