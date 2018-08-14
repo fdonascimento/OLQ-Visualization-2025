@@ -24,6 +24,7 @@ public class OptimalLocationQueryController {
 	@Autowired
 	public OptimalLocationQueryController(OptimalLocationQuery optimalLocationQuery) {
 		this.optimalLocationQuery = optimalLocationQuery;
+		this.inputQuery = new InputQueryJson();
 	}
 	
 	@PostMapping("/input-candidates")
