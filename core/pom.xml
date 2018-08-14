@@ -124,6 +124,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19</version><!--$NO-MVN-MAN-VER$-->
 				<dependencies>
 					<!--This dependency is necessary to run junit5 with maven. The tests 
 						will be run when the project is built by maven. -->
