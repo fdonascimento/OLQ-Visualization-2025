@@ -47,13 +47,34 @@ export class MapVisualizationComponent implements OnInit {
     result.subscribe(data => {
       this.putClientsOnMap(map, data.clients);
       this.putFacilitiesOnMap(map, data.facilities);
-      this.putCandidatesOnMap(data.candidates);
-      this.putBestLocationOnMap(data.firstBestLocation);
+      // this.putCandidatesOnMap(data.candidates);
+      // this.putBestLocationOnMap(data.firstBestLocation);
       this.map.on('click', event => {
         // const latlng = map.mouseEventToLatLng(event.originalEvent);
         // console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
       });
     });
+  }
+
+  findBestLocation() {
+    const result = this.bestLocationService.findBestLocation();
+    result.subscribe(data => {
+      this.putCandidatesOnMap(data.candidates);
+      this.putBestLocationOnMap(data.firstBestLocation);
+    });
+  }
+
+  inputCandidates() {
+    this.map.on('click', this.inputCandidatesEvent);
+  }
+
+  private inputCandidatesEvent(event: any) {
+    const latlng = event.latlng;
+    console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
+  }
+
+  disableInputCandidates() {
+    this.map.off('click', this.inputCandidatesEvent);
   }
 
   private putCandidatesOnMap(candidates) {
@@ -109,16 +130,12 @@ export class MapVisualizationComponent implements OnInit {
     this.map.removeLayer(candidate.getFarthestClient());
     this.map.removeLayer(candidate.getClosestClient());
     this.map.removeLayer(candidate.getInfo());
-    this.map.removeLayer(candidate.getMaxRay());
-    this.map.removeLayer(candidate.getMinRay());
   }
 
   private showCandidateLayers(place: Place): void {
     place.getAttractedArea().addTo(this.map);
     place.getAttractedArea().bringToBack();
-    // place.getMaxRay().addTo(this.map);
     place.getMarker().addTo(this.map);
-    // place.getMinRay().addTo(this.map);
     place.getFarthestClient().addTo(this.map);
     place.getClosestClient().addTo(this.map);
     this.drawInfo(place.getInfo());
@@ -190,8 +207,6 @@ export class MapVisualizationComponent implements OnInit {
       this.lastFacilityClicked = facility;
       facility.getFarthestClient().addTo(this.map);
       facility.getClosestClient().addTo(this.map);
-      // facility.getMinRay().addTo(this.map);
-      // facility.getMaxRay().addTo(this.map);
       this.drawInfo(facility.getInfo());
     }
   }
@@ -201,8 +216,6 @@ export class MapVisualizationComponent implements OnInit {
       this.map.removeLayer(facility.getFarthestClient());
       this.map.removeLayer(facility.getClosestClient());
       this.map.removeLayer(facility.getInfo());
-      this.map.removeLayer(facility.getMaxRay());
-      this.map.removeLayer(facility.getMinRay());
     }
   }
 
