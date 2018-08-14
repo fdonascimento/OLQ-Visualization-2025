@@ -8,7 +8,9 @@ public class ClientJson extends GeoLocationJson {
 	
 	public ClientJson(Client client) {
 		super(client);
-		this.weight = client.getWeight();
+		if (client != null) {
+			this.weight = client.getWeight();
+		}
 	}
 	
 	public Double getWeight() {
