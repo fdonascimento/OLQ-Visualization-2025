@@ -19,6 +19,9 @@ export class MapVisualizationComponent implements OnInit {
   private candidates: Array<Place>;
   private facilities: Array<Place>;
   private map: Map;
+  private inputCandidatesSet: Set<Place>;
+  private inputLatitudes: Set<any>;
+  private inputLongitudes: Set<any>;
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -36,6 +39,9 @@ export class MapVisualizationComponent implements OnInit {
     };
 
     this.candidates = new Array<Place>();
+    this.inputCandidatesSet = new Set<Place>();
+    this.inputLatitudes = new Set<any>();
+    this.inputLongitudes = new Set<any>();
   }
 
   ngOnInit() {
@@ -57,24 +63,51 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   findBestLocation() {
+    this.bestLocationService.inputCandidates(this.inputCandidatesSet);
+    this.clearInputCandidates();
     const result = this.bestLocationService.findBestLocation();
     result.subscribe(data => {
-      this.putCandidatesOnMap(data.candidates);
-      this.putBestLocationOnMap(data.firstBestLocation);
+      if (data.candidates.length > 0) {
+        this.putCandidatesOnMap(data.candidates);
+        this.putBestLocationOnMap(data.firstBestLocation);
+      }
     });
   }
 
-  inputCandidates() {
-    this.map.on('click', this.inputCandidatesEvent);
+  private clearInputCandidates(): void {
+    this.inputCandidatesSet.forEach(candidate => {
+      this.map.removeLayer(candidate.getMarker());
+    });
+    this.inputCandidatesSet.clear();
+    this.inputLatitudes.clear();
+    this.inputLongitudes.clear();
   }
 
-  private inputCandidatesEvent(event: any) {
-    const latlng = event.latlng;
-    console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
+  inputCandidates() {
+    this.map.on('click', (event: any) => {
+      const latlng = event.latlng;
+
+      if (!this.inputLatitudes.has(latlng.lat) && !this.inputLongitudes.has(latlng.lng)) {
+        const candidate = new Place(latlng.lat, latlng.lng);
+        candidate.setColorMarker('blue');
+        const markerCandidate = candidate.getMarker();
+        markerCandidate.addTo(this.map);
+        markerCandidate.on('click', () => {
+          this.inputLatitudes.delete(latlng.lat);
+          this.inputLongitudes.delete(latlng.lng);
+          this.map.removeLayer(markerCandidate);
+        });
+
+        this.inputLatitudes.add(latlng.lat);
+        this.inputLongitudes.add(latlng.lng);
+        this.inputCandidatesSet.add(candidate);
+        console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
+      }
+    });
   }
 
   disableInputCandidates() {
-    this.map.off('click', this.inputCandidatesEvent);
+    this.map.off('click');
   }
 
   private putCandidatesOnMap(candidates) {
@@ -93,8 +126,9 @@ export class MapVisualizationComponent implements OnInit {
     place.setMinDistance(candidate.minDistance);
     place.setMaxDistance(candidate.maxDistance);
     place.setAverageDistance(candidate.averageDistance);
-    place.setInfoLocation(marker([-12.976122149086684, -38.2485580444336]));
     place.setColorMarker(color);
+    place.setInfoLocation(marker([-12.976122149086684, -38.2485580444336]));
+
     place.setAttractedClients(candidate.attractedClients);
     place.setFarthestClient(candidate.farthestClient);
     place.setClosestClient(candidate.closestClient);

@@ -137,4 +137,12 @@ export class Place {
    setHeaderInfo(header: string): void {
        this.headerInfo = header;
    }
+
+   getLatitude(): number {
+       return this.latitude;
+   }
+
+   getLongitude(): number {
+       return this.longitude;
+   }
 }
