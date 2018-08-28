@@ -22,6 +22,7 @@ export class MapVisualizationComponent implements OnInit {
   private inputCandidatesSet: Set<Place>;
   private inputLatitudes: Set<any>;
   private inputLongitudes: Set<any>;
+  private lastInfluenceCandidate: Place;
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -63,14 +64,20 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   findBestLocation() {
-    this.bestLocationService.inputCandidates(this.inputCandidatesSet);
-    this.clearInputCandidates();
-    const result = this.bestLocationService.findBestLocation();
-    result.subscribe(data => {
-      if (data.candidates.length > 0) {
-        this.putCandidatesOnMap(data.candidates);
-        this.putBestLocationOnMap(data.firstBestLocation);
-      }
+    this.map.off('click');
+    this.candidates.forEach(candidate => {
+      this.inputCandidatesSet.add(candidate);
+      this.map.removeLayer(candidate.getMarker());
+    });
+    this.bestLocationService.inputCandidates(this.inputCandidatesSet).subscribe(response => {
+      this.clearInputCandidates();
+      const result = this.bestLocationService.findBestLocation();
+      result.subscribe(data => {
+        if (data.candidates.length > 0) {
+          this.putCandidatesOnMap(data.candidates);
+          this.putBestLocationOnMap(data.firstBestLocation);
+        }
+      });
     });
   }
 
@@ -83,7 +90,32 @@ export class MapVisualizationComponent implements OnInit {
     this.inputLongitudes.clear();
   }
 
+  clearAllCandidates(): void {
+    this.candidates.forEach(candidate => {
+      this.map.removeLayer(candidate.getMarker());
+    });
+    this.candidates = [];
+    this.clearInputCandidates();
+  }
+
+  showInfluenceArea(): void {
+    this.map.off('click');
+    this.map.on('click', (event: any) => {
+      const latlng = event.latlng;
+
+      const result = this.bestLocationService.getInfluenceArea(latlng.lat, latlng.lng);
+      result.subscribe(data => {
+          if (this.lastInfluenceCandidate != null) {
+            this.map.removeLayer(this.lastInfluenceCandidate.getMarker());
+            this.lastInfluenceCandidate = null;
+          }
+          this.lastInfluenceCandidate = this.putCandidateOnMap(data.candidates[0], 'blue');
+      });
+    });
+  }
+
   inputCandidates() {
+    this.map.off('click');
     this.map.on('click', (event: any) => {
       const latlng = event.latlng;
 
@@ -120,7 +152,7 @@ export class MapVisualizationComponent implements OnInit {
     this.putCandidateOnMap(bestLocation, 'purple');
   }
 
-  private putCandidateOnMap(candidate, color: string): void {
+  private putCandidateOnMap(candidate, color: string): Place {
     const place = new Place(candidate.latitude, candidate.longitude);
     place.setHeaderInfo('Candidate');
     place.setMinDistance(candidate.minDistance);
@@ -134,6 +166,7 @@ export class MapVisualizationComponent implements OnInit {
     place.setClosestClient(candidate.closestClient);
     this.candidates.push(place);
     this.drawPlace(this.map, place);
+    return place;
   }
 
   private drawPlace(map: Map, place: Place) {
