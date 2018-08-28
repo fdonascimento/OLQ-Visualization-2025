@@ -40,9 +40,11 @@ public class OptimalLocationQuery {
 		this.locationQuery = locationQuery;
 	}
 	
-	public LocationQueryResult findBestLocation() {
+	public LocationQueryResult findBestLocation(Candidates candidates) {
+		if (candidates == null) {
+			candidates = candidateProvider.getCandidates();
+		}
 		Clients clients = clientProvider.getClients();
-		Candidates candidates = candidateProvider.getCandidates();
 		Facilities facilities = facilityProvider.getFacilities();
 		return locationQuery.findBestLocation(clients, facilities, candidates);
 	}

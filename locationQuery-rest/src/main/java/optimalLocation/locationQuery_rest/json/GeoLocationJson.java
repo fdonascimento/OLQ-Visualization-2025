@@ -33,4 +33,12 @@ public class GeoLocationJson {
 	public String getName() {
 		return name;
 	}
+	
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+	
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
 }

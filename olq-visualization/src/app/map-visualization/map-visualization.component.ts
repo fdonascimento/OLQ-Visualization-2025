@@ -19,6 +19,9 @@ export class MapVisualizationComponent implements OnInit {
   private candidates: Array<Place>;
   private facilities: Array<Place>;
   private map: Map;
+  private inputCandidatesSet: Set<Place>;
+  private inputLatitudes: Set<any>;
+  private inputLongitudes: Set<any>;
 
   constructor(private bestLocationService: BestLocationService) {
     // Define our base layers so we can reference them multiple times
@@ -36,6 +39,9 @@ export class MapVisualizationComponent implements OnInit {
     };
 
     this.candidates = new Array<Place>();
+    this.inputCandidatesSet = new Set<Place>();
+    this.inputLatitudes = new Set<any>();
+    this.inputLongitudes = new Set<any>();
   }
 
   ngOnInit() {
@@ -47,13 +53,61 @@ export class MapVisualizationComponent implements OnInit {
     result.subscribe(data => {
       this.putClientsOnMap(map, data.clients);
       this.putFacilitiesOnMap(map, data.facilities);
-      this.putCandidatesOnMap(data.candidates);
-      this.putBestLocationOnMap(data.firstBestLocation);
+      // this.putCandidatesOnMap(data.candidates);
+      // this.putBestLocationOnMap(data.firstBestLocation);
       this.map.on('click', event => {
         // const latlng = map.mouseEventToLatLng(event.originalEvent);
         // console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
       });
     });
+  }
+
+  findBestLocation() {
+    this.bestLocationService.inputCandidates(this.inputCandidatesSet);
+    this.clearInputCandidates();
+    const result = this.bestLocationService.findBestLocation();
+    result.subscribe(data => {
+      if (data.candidates.length > 0) {
+        this.putCandidatesOnMap(data.candidates);
+        this.putBestLocationOnMap(data.firstBestLocation);
+      }
+    });
+  }
+
+  private clearInputCandidates(): void {
+    this.inputCandidatesSet.forEach(candidate => {
+      this.map.removeLayer(candidate.getMarker());
+    });
+    this.inputCandidatesSet.clear();
+    this.inputLatitudes.clear();
+    this.inputLongitudes.clear();
+  }
+
+  inputCandidates() {
+    this.map.on('click', (event: any) => {
+      const latlng = event.latlng;
+
+      if (!this.inputLatitudes.has(latlng.lat) && !this.inputLongitudes.has(latlng.lng)) {
+        const candidate = new Place(latlng.lat, latlng.lng);
+        candidate.setColorMarker('blue');
+        const markerCandidate = candidate.getMarker();
+        markerCandidate.addTo(this.map);
+        markerCandidate.on('click', () => {
+          this.inputLatitudes.delete(latlng.lat);
+          this.inputLongitudes.delete(latlng.lng);
+          this.map.removeLayer(markerCandidate);
+        });
+
+        this.inputLatitudes.add(latlng.lat);
+        this.inputLongitudes.add(latlng.lng);
+        this.inputCandidatesSet.add(candidate);
+        console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
+      }
+    });
+  }
+
+  disableInputCandidates() {
+    this.map.off('click');
   }
 
   private putCandidatesOnMap(candidates) {
@@ -72,8 +126,9 @@ export class MapVisualizationComponent implements OnInit {
     place.setMinDistance(candidate.minDistance);
     place.setMaxDistance(candidate.maxDistance);
     place.setAverageDistance(candidate.averageDistance);
-    place.setInfoLocation(marker([-12.976122149086684, -38.2485580444336]));
     place.setColorMarker(color);
+    place.setInfoLocation(marker([-12.976122149086684, -38.2485580444336]));
+
     place.setAttractedClients(candidate.attractedClients);
     place.setFarthestClient(candidate.farthestClient);
     place.setClosestClient(candidate.closestClient);
@@ -109,16 +164,12 @@ export class MapVisualizationComponent implements OnInit {
     this.map.removeLayer(candidate.getFarthestClient());
     this.map.removeLayer(candidate.getClosestClient());
     this.map.removeLayer(candidate.getInfo());
-    this.map.removeLayer(candidate.getMaxRay());
-    this.map.removeLayer(candidate.getMinRay());
   }
 
   private showCandidateLayers(place: Place): void {
     place.getAttractedArea().addTo(this.map);
     place.getAttractedArea().bringToBack();
-    // place.getMaxRay().addTo(this.map);
     place.getMarker().addTo(this.map);
-    // place.getMinRay().addTo(this.map);
     place.getFarthestClient().addTo(this.map);
     place.getClosestClient().addTo(this.map);
     this.drawInfo(place.getInfo());
@@ -190,8 +241,6 @@ export class MapVisualizationComponent implements OnInit {
       this.lastFacilityClicked = facility;
       facility.getFarthestClient().addTo(this.map);
       facility.getClosestClient().addTo(this.map);
-      // facility.getMinRay().addTo(this.map);
-      // facility.getMaxRay().addTo(this.map);
       this.drawInfo(facility.getInfo());
     }
   }
@@ -201,8 +250,6 @@ export class MapVisualizationComponent implements OnInit {
       this.map.removeLayer(facility.getFarthestClient());
       this.map.removeLayer(facility.getClosestClient());
       this.map.removeLayer(facility.getInfo());
-      this.map.removeLayer(facility.getMaxRay());
-      this.map.removeLayer(facility.getMinRay());
     }
   }
 
