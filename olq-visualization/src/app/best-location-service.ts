@@ -40,7 +40,6 @@ export class BestLocationService {
 
       observable.subscribe(response => {
           console.log(`Status: ${response.status}, StatusText: ${response.statusText}`);
-          console.log(`Headers: ${response.headers.toJSON}`);
         },
         message => console.error(`Error: ${message.statusText}`)
       );

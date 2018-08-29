@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { circle, latLng, Map, marker, tileLayer, divIcon, Marker } from 'leaflet';
+import { circle, DomEvent, latLng, Map, marker, Marker, tileLayer } from 'leaflet';
 import { BestLocationService } from '../best-location-service';
 import { Place } from './Place';
-import { Console } from '@angular/core/src/console';
 
 @Component({
   selector: 'app-map-visualization',
@@ -105,37 +104,55 @@ export class MapVisualizationComponent implements OnInit {
 
       const result = this.bestLocationService.getInfluenceArea(latlng.lat, latlng.lng);
       result.subscribe(data => {
-          if (this.lastInfluenceCandidate != null) {
-            this.map.removeLayer(this.lastInfluenceCandidate.getMarker());
-            this.lastInfluenceCandidate = null;
-          }
+          this.disableInfluenceArea();
           this.lastInfluenceCandidate = this.putCandidateOnMap(data.candidates[0], 'blue');
+          this.showCandidateLayers(this.lastInfluenceCandidate);
       });
     });
   }
 
+  disableInfluenceArea() {
+    if (this.lastInfluenceCandidate != null) {
+      this.map.removeLayer(this.lastInfluenceCandidate.getMarker());
+      this.map.removeLayer(this.lastInfluenceCandidate.getAttractedArea());
+      this.removeCandidateInfo(this.lastInfluenceCandidate);
+      this.lastInfluenceCandidate = null;
+    }
+  }
+
   inputCandidates() {
+    this.disableInfluenceArea();
     this.map.off('click');
     this.map.on('click', (event: any) => {
       const latlng = event.latlng;
-
-      if (!this.inputLatitudes.has(latlng.lat) && !this.inputLongitudes.has(latlng.lng)) {
-        const candidate = new Place(latlng.lat, latlng.lng);
-        candidate.setColorMarker('blue');
-        const markerCandidate = candidate.getMarker();
-        markerCandidate.addTo(this.map);
-        markerCandidate.on('click', () => {
-          this.inputLatitudes.delete(latlng.lat);
-          this.inputLongitudes.delete(latlng.lng);
-          this.map.removeLayer(markerCandidate);
-        });
-
-        this.inputLatitudes.add(latlng.lat);
-        this.inputLongitudes.add(latlng.lng);
-        this.inputCandidatesSet.add(candidate);
-        console.log(`latitude: ${latlng.lat}, longitude: ${latlng.lng}`);
-      }
+      this.inputCandidate(latlng.lat, latlng.lng);
     });
+  }
+
+  inputCandidate(latitude: number, longitude: number) {
+    if (!this.inputLatitudes.has(latitude) && !this.inputLongitudes.has(longitude)) {
+      const candidate = new Place(latitude, longitude);
+      candidate.setColorMarker('blue');
+      const markerCandidate = candidate.getMarker();
+      markerCandidate.addTo(this.map);
+      markerCandidate.on('click', (event: any) => {
+        this.inputLatitudes.delete(latitude);
+        this.inputLongitudes.delete(longitude);
+        this.map.removeLayer(markerCandidate);
+        DomEvent.stopPropagation(event);
+      });
+
+      this.inputLatitudes.add(latitude);
+      this.inputLongitudes.add(longitude);
+      this.inputCandidatesSet.add(candidate);
+    }
+  }
+
+  markAsCandidate() {
+    this.inputCandidate(this.lastInfluenceCandidate.getLatitude(), this.lastInfluenceCandidate.getLongitude());
+    this.map.removeLayer(this.lastInfluenceCandidate.getAttractedArea());
+    this.removeCandidateInfo(this.lastInfluenceCandidate);
+    this.lastInfluenceCandidate = null;
   }
 
   disableInputCandidates() {
