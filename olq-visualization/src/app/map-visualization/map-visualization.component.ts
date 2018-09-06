@@ -68,7 +68,7 @@ export class MapVisualizationComponent implements OnInit {
       this.inputCandidatesSet.add(candidate);
       this.map.removeLayer(candidate.getMarker());
     });
-    this.bestLocationService.inputCandidates(this.inputCandidatesSet).subscribe(response => {
+    this.bestLocationService.inputCandidates(this.inputCandidatesSet).subscribe(() => {
       this.clearInputCandidates();
       const result = this.bestLocationService.findBestLocation();
       result.subscribe(data => {
