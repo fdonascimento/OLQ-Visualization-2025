@@ -150,6 +150,7 @@ export class MapVisualizationComponent implements OnInit {
 
   markAsCandidate() {
     this.inputCandidate(this.lastInfluenceCandidate.getLatitude(), this.lastInfluenceCandidate.getLongitude());
+    this.candidates.push(this.lastInfluenceCandidate);
     this.map.removeLayer(this.lastInfluenceCandidate.getAttractedArea());
     this.removeCandidateInfo(this.lastInfluenceCandidate);
     this.lastInfluenceCandidate = null;
@@ -161,12 +162,14 @@ export class MapVisualizationComponent implements OnInit {
 
   private putCandidatesOnMap(candidates) {
     for (const candidate of candidates) {
-      this.putCandidateOnMap(candidate, 'blue');
+      const place = this.putCandidateOnMap(candidate, 'blue');
+      this.candidates.push(place);
     }
   }
 
   private putBestLocationOnMap(bestLocation) {
-    this.putCandidateOnMap(bestLocation, 'purple');
+    const place = this.putCandidateOnMap(bestLocation, 'purple');
+    this.candidates.push(place);
   }
 
   private putCandidateOnMap(candidate, color: string): Place {
@@ -181,7 +184,6 @@ export class MapVisualizationComponent implements OnInit {
     place.setAttractedClients(candidate.attractedClients);
     place.setFarthestClient(candidate.farthestClient);
     place.setClosestClient(candidate.closestClient);
-    this.candidates.push(place);
     this.drawPlace(this.map, place);
     return place;
   }
