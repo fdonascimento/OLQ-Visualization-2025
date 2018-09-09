@@ -106,6 +106,12 @@ export class MapVisualizationComponent implements OnInit {
       result.subscribe(data => {
           this.disableInfluenceArea();
           this.lastInfluenceCandidate = this.putCandidateOnMap(data.candidates[0], 'blue');
+          this.lastInfluenceCandidate.getMarker().on('click', (markerEvent: any) => {
+            this.map.removeLayer(this.lastInfluenceCandidate.getAttractedArea());
+            this.map.removeLayer(this.lastInfluenceCandidate.getMarker());
+            this.removeCandidateInfo(this.lastInfluenceCandidate);
+            DomEvent.stopPropagation(markerEvent);
+          });
           this.showCandidateLayers(this.lastInfluenceCandidate);
       });
     });
@@ -138,6 +144,7 @@ export class MapVisualizationComponent implements OnInit {
       markerCandidate.on('click', (event: any) => {
         this.inputLatitudes.delete(latitude);
         this.inputLongitudes.delete(longitude);
+        this.inputCandidatesSet.delete(candidate);
         this.map.removeLayer(markerCandidate);
         DomEvent.stopPropagation(event);
       });
@@ -150,6 +157,7 @@ export class MapVisualizationComponent implements OnInit {
 
   markAsCandidate() {
     this.inputCandidate(this.lastInfluenceCandidate.getLatitude(), this.lastInfluenceCandidate.getLongitude());
+    this.candidates.push(this.lastInfluenceCandidate);
     this.map.removeLayer(this.lastInfluenceCandidate.getAttractedArea());
     this.removeCandidateInfo(this.lastInfluenceCandidate);
     this.lastInfluenceCandidate = null;
@@ -161,12 +169,16 @@ export class MapVisualizationComponent implements OnInit {
 
   private putCandidatesOnMap(candidates) {
     for (const candidate of candidates) {
-      this.putCandidateOnMap(candidate, 'blue');
+      const place = this.putCandidateOnMap(candidate, 'blue');
+      this.candidates.push(place);
+      this.drawPlace(this.map, place);
     }
   }
 
   private putBestLocationOnMap(bestLocation) {
-    this.putCandidateOnMap(bestLocation, 'purple');
+    const place = this.putCandidateOnMap(bestLocation, 'purple');
+    this.candidates.push(place);
+    this.drawPlace(this.map, place);
   }
 
   private putCandidateOnMap(candidate, color: string): Place {
@@ -181,8 +193,6 @@ export class MapVisualizationComponent implements OnInit {
     place.setAttractedClients(candidate.attractedClients);
     place.setFarthestClient(candidate.farthestClient);
     place.setClosestClient(candidate.closestClient);
-    this.candidates.push(place);
-    this.drawPlace(this.map, place);
     return place;
   }
 
@@ -193,6 +203,8 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   private seeAttractedArea(place: Place) {
+    this.map.off('click');
+    this.disableInfluenceArea();
     if (this.lastCandidateClicked != null) {
       this.removeCandidateLayers(place);
       this.lastCandidateClicked = null;
@@ -283,6 +295,8 @@ export class MapVisualizationComponent implements OnInit {
   }
 
   private showFacilityInfo(facility: Place) {
+    this.map.off('click');
+    this.disableInfluenceArea();
     if (this.lastFacilityClicked != null && this.lastFacilityClicked.equals(facility)) {
       this.hideFacilityInfo(facility);
       this.lastFacilityClicked = null;
