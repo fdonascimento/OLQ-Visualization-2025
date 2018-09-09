@@ -1,17 +1,68 @@
-<div>
-  <button (click)="showFacilitiesAttractedArea()">Show facilities influence area</button>
-  <button (click)="hideFacilitiesAttractedArea()">Hide facilities influence area</button>
-  <button (click)="findBestLocation()">Find best location</button>
-  <button (click)="inputCandidates()">Input Candidates</button>
-  <button (click)="disableInputCandidates()">Disable Input Candidates</button>
-  <button (click)="clearAllCandidates()">Clear Input Candidates</button>
-  <button (click)="showInfluenceArea()">Show influence area</button>
-  <button (click)="disableInfluenceArea()">Disable influence area</button>
-  <button (click)="markAsCandidate()">Mark as candidate</button>
-</div>
-<div class="map"
-  leaflet 
-  [leafletOptions]="options"
-  (leafletMapReady)="onMapReady($event)">
+<div class="wrapper">
+  <!-- Sidebar -->
+  <nav id="sidebar">
+      <div class="sidebar-header">
+          <!-- <h3>Optimal Location Queries</h3> -->
+      </div>
 
+      <ul class="list-unstyled components">
+          <li class="active">
+              <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Tipo de consulta</a>
+              <ul class="collapse list-unstyled" id="homeSubmenu">
+                  <li>
+                      <a href="#">Competitiva</a>
+                  </li>
+                  <li>
+                      <a href="#">MinMax</a>
+                  </li>
+                  <li>
+                      <a href="#">MinSum</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+              <a href="#" (click)="showFacilitiesAttractedArea()">Mostrar área de influência das facilities</a>
+          </li>
+          <li>
+              <a href="#" (click)="hideFacilitiesAttractedArea()">Esconder área de influência das facilities</a>
+         </li>
+         <li>
+             <a href="#" (click)="findBestLocation()">Encontrar melhor local</a>
+         </li>
+         <li>
+             <a href="#" (click)="inputCandidates()">Inserir candidatos</a>
+         </li>
+        <li>
+            <a href="#" (click)="clearAllCandidates()">Limpar candidatos</a>
+        </li>
+        <li>
+            <a href="#" (click)="showInfluenceArea()">Visualizar área de influência</a>
+        </li>
+        <li>
+            <a href="#" (click)="markAsCandidate()">Marcar ponto como candidato</a>
+        </li>
+      </ul>
+  </nav>
+
+    <div id="content">
+      <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+              
+              <button type="button" id="sidebarCollapse" class="btn btn-info">
+                  <i class="fas fa-align-left"></i>
+                  <span>Toggle Sidebar</span>
+                </button>
+
+            
+                
+            </div>
+     </nav> -->
+    <div class="map"
+        leaflet 
+        [leafletOptions]="options"
+        (leafletMapReady)="onMapReady($event)">
+
+    </div>
+
+    </div>
 </div>
