@@ -87,13 +87,6 @@ export class Place {
        return this.marker;
    }
 
-   getInfo(): Marker {
-    if (this.info == null) {
-        this.createInfo();
-    }
-    return this.info;
-   }
-
    setMaxDistance(maxDistance: number): void {
        this.maxDistance = maxDistance;
    }
@@ -106,17 +99,14 @@ export class Place {
        this.avgDistance = avgDistance;
    }
 
-   private createInfo(): void {
-    const div = divIcon({
-        html: `<h4 style="webkit-margin-after: 0em;">${this.headerInfo} Info</h4>
-               Latitude: ${this.latitude}<br/>
-               Longitude: ${this.longitude}<br/>
-               Total clients: ${this.totalClients}<br/>
-               Min Distance: ${this.minDistance.toFixed(2)} km<br/>
-               Max Distance: ${this.maxDistance.toFixed(2)} km<br/>
-               Avg Distance: ${this.avgDistance.toFixed(2)} km`
-      });
-      this.info = this.infoLocation.setIcon(div);
+   gePopuptHtml(): string {
+    return `<h4 style="webkit-margin-after: 0em;">${this.headerInfo} Info</h4>
+            Latitude: ${this.latitude}<br/>
+            Longitude: ${this.longitude}<br/>
+            Total clients: ${this.totalClients}<br/>
+            Min Distance: ${this.minDistance.toFixed(2)} km<br/>
+            Max Distance: ${this.maxDistance.toFixed(2)} km<br/>
+            Avg Distance: ${this.avgDistance.toFixed(2)} km`;
    }
 
    setInfoLocation(infoLocation: Marker): void {
