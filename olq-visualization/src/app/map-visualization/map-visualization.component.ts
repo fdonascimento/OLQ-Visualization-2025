@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { circle, DomEvent, latLng, Map, marker, Marker, tileLayer } from 'leaflet';
+import { circle, DomEvent, latLng, Map, marker, tileLayer } from 'leaflet';
 import { BestLocationService } from '../best-location-service';
 import { Place } from './Place';
 
@@ -225,7 +225,7 @@ export class MapVisualizationComponent implements OnInit {
   private removeCandidateInfo(candidate: Place): void {
     this.map.removeLayer(candidate.getFarthestClient());
     this.map.removeLayer(candidate.getClosestClient());
-    this.map.removeLayer(candidate.getInfo());
+    candidate.getMarker().unbindPopup();
   }
 
   private showCandidateLayers(place: Place): void {
@@ -234,14 +234,7 @@ export class MapVisualizationComponent implements OnInit {
     place.getMarker().addTo(this.map);
     place.getFarthestClient().addTo(this.map);
     place.getClosestClient().addTo(this.map);
-    this.drawInfo(place.getInfo());
-  }
-
-  private drawInfo(info: Marker): void {
-    info.addTo(this.map);
-    info.getElement().style.width = '200px';
-    info.getElement().classList.remove('leaflet-div-icon');
-    info.getElement().getElementsByTagName('h4').item(0).style.marginBottom = '0';
+    place.getMarker().bindPopup(place.gePopuptHtml()).openPopup();
   }
 
   private hideCandidates() {
@@ -305,15 +298,15 @@ export class MapVisualizationComponent implements OnInit {
       this.lastFacilityClicked = facility;
       facility.getFarthestClient().addTo(this.map);
       facility.getClosestClient().addTo(this.map);
-      this.drawInfo(facility.getInfo());
+      facility.getMarker().bindPopup(facility.gePopuptHtml()).openPopup();
     }
   }
 
   private hideFacilityInfo(facility: Place): void {
     if (facility != null) {
+      facility.getMarker().unbindPopup();
       this.map.removeLayer(facility.getFarthestClient());
       this.map.removeLayer(facility.getClosestClient());
-      this.map.removeLayer(facility.getInfo());
     }
   }
 
