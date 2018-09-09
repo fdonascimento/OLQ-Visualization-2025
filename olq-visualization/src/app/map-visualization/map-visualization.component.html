@@ -2,80 +2,67 @@
   <!-- Sidebar -->
   <nav id="sidebar">
       <div class="sidebar-header">
-          <h3>Bootstrap Sidebar</h3>
+          <!-- <h3>Optimal Location Queries</h3> -->
       </div>
 
       <ul class="list-unstyled components">
-          <p>Dummy Heading</p>
           <li class="active">
-              <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+              <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Tipo de consulta</a>
               <ul class="collapse list-unstyled" id="homeSubmenu">
                   <li>
-                      <a href="#">Home 1</a>
+                      <a href="#">Competitiva</a>
                   </li>
                   <li>
-                      <a href="#">Home 2</a>
+                      <a href="#">MinMax</a>
                   </li>
                   <li>
-                      <a href="#">Home 3</a>
+                      <a href="#">MinSum</a>
                   </li>
               </ul>
           </li>
           <li>
-              <a href="#" (click)="showFacilitiesAttractedArea()">Show facilities influence area</a>
+              <a href="#" (click)="showFacilitiesAttractedArea()">Mostrar área de influência das facilities</a>
           </li>
           <li>
-              <a href="#" (click)="hideFacilitiesAttractedArea()">Hide facilities influence area</a>
+              <a href="#" (click)="hideFacilitiesAttractedArea()">Esconder área de influência das facilities</a>
          </li>
          <li>
-             <a href="#" (click)="findBestLocation()">Find best location</a>
+             <a href="#" (click)="findBestLocation()">Encontrar melhor local</a>
          </li>
          <li>
-             <a href="#" (click)="inputCandidates()">Input Candidates</a>
+             <a href="#" (click)="inputCandidates()">Inserir candidatos</a>
          </li>
-         <li>
-            <a href="#" (click)="disableInputCandidates()">Disable Input Candidates</a>
+        <li>
+            <a href="#" (click)="clearAllCandidates()">Limpar candidatos</a>
         </li>
         <li>
-            <a href="#" (click)="clearAllCandidates()">Clear Input Candidates</a>
+            <a href="#" (click)="showInfluenceArea()">Visualizar área de influência</a>
         </li>
         <li>
-            <a href="#" (click)="showInfluenceArea()">Show influence area</a>
-        </li>
-        <li>
-            <a href="#" (click)="disableInfluenceArea()">Disable influence area</a>
-        </li>
-        <li>
-            <a href="#" (click)="markAsCandidate()">Mark as candidate</a>
+            <a href="#" (click)="markAsCandidate()">Marcar ponto como candidato</a>
         </li>
       </ul>
   </nav>
 
     <div id="content">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
           <div class="container-fluid">
               
               <button type="button" id="sidebarCollapse" class="btn btn-info">
                   <i class="fas fa-align-left"></i>
                   <span>Toggle Sidebar</span>
                 </button>
-                <button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <i class="fas fa-align-left"></i>
-                        <span>Toggle Sidebar</span>
-                      </button>
-                      <button type="button" id="sidebarCollapse" class="btn btn-info">
-                            <i class="fas fa-align-left"></i>
-                            <span>Toggle Sidebar</span>
-                          </button>
+
+            
                 
             </div>
-        </nav>
+     </nav> -->
+    <div class="map"
+        leaflet 
+        [leafletOptions]="options"
+        (leafletMapReady)="onMapReady($event)">
 
-        <div class="map"
-            leaflet 
-            [leafletOptions]="options"
-            (leafletMapReady)="onMapReady($event)">
+    </div>
 
-        </div>
     </div>
 </div>
