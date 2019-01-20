@@ -26,3 +26,9 @@ client-provider-txt/salvador_city\.txt
 locationQuery-rest/ClientProviders/
 
 locationQuery-cmd/ClientProviders/
+
+libs/
+
+min-clients/\.editorconfig
+
+min-clients/target
