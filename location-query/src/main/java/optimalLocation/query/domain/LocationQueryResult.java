@@ -36,8 +36,8 @@ public class LocationQueryResult {
 	}
 
 	public void setBestCandidate(Candidate newBestCandidate) {
-		if (bestCandidate == null || newBestCandidate.score() > bestCandidate.score()) {
+//		if (bestCandidate == null || newBestCandidate.score() > bestCandidate.score()) {
 			bestCandidate = newBestCandidate;
-		}
+//		}
 	}
 }

@@ -1,22 +1,17 @@
 {
     "candidates": [
         {
-            "latitude": 1.1,
-            "longitude": 1.2
+            "latitude": -12.934240,
+            "longitude": -38.430540
 
         },
         {
-            "latitude": 2.1,
-            "longitude": 1.5
+            "latitude": -12.969597,
+            "longitude": -38.495713
         },
         {
-            "latitude": 1.5684,
-            "longitude": 1.95654
-
-        },
-        {
-            "latitude": 3.5,
-            "longitude": 4.8
+            "latitude": -13.000623,
+            "longitude": -38.472650
         }
     ]
 }

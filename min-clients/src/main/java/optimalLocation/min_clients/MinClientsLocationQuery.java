@@ -1,4 +1,4 @@
-package optimalLocation.competitive_location;
+package optimalLocation.min_clients;
 
 import optimalLocation.query.LocationQuery;
 import optimalLocation.query.domain.Candidate;
@@ -10,7 +10,7 @@ import optimalLocation.query.domain.Facility;
 import optimalLocation.query.domain.LocationQueryResult;
 import optimalLocation.query.domain.Place;
 
-public class CompetitiveLocationQuery implements LocationQuery {
+public class MinClientsLocationQuery implements LocationQuery {
 
 	@Override
 	public LocationQueryResult findBestLocation(Clients clients, Facilities facilities, Candidates candidates) {
@@ -22,16 +22,19 @@ public class CompetitiveLocationQuery implements LocationQuery {
 		
 		for (Candidate candidate : candidates) {
 			calculateCandidateScore(clients, facilities, candidate);
-			if (bestCandidate == null || candidate.score() > bestCandidate.score()) {
+			if (bestCandidate == null || candidate.score() < bestCandidate.score()) {
 				bestCandidate = candidate;
 			}
-			
 			candidate.calculateClosestAndFarthestClient();
 		}
 		result.setBestCandidate(bestCandidate);
 		
 		facilities.forEach(Place::calculateClosestAndFarthestClient);
 		return result;
+	}
+	
+	public void setBestCandidate(Candidate newBestCandidate) {
+		
 	}
 	
 	private void calculateCandidateScore(Clients clients, Facilities facilities, Candidate candidate) {

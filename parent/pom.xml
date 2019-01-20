@@ -28,6 +28,7 @@
   	<module>../client-provider-fake</module>
   	<module>../client-provider-txt</module>
   	<module>../competitive-location</module>
+  	<module>../min-clients</module>
   	<module>../facility-provider-fake</module>
   	<module>../core</module>
   	<module>../locationQuery-cmd</module>

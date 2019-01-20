@@ -3,7 +3,7 @@
 # The parameters must be set with the jar names without the extension.
 
 #The jar must be placed in the LocationQueries folder.
-locationQuery: competitive-location-0.0.1-SNAPSHOT
+locationQuery: min-clients-0.0.1-SNAPSHOT
 #The jar must be placed in the ClientProviders folder.
 clientProvider: client-provider-txt
 #The jar must be placed in the FacilityProviders folder.
