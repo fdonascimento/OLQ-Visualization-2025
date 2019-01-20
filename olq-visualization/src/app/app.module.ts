@@ -5,11 +5,13 @@ import { AppComponent } from './app.component';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import { HttpModule } from '@angular/http';
 import { MapVisualizationComponent } from './map-visualization/map-visualization.component';
+import { MapVisualizationSimplifiedComponent } from './map-visualization-simplified/map-visualization-simplified.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MapVisualizationComponent
+    MapVisualizationComponent,
+    MapVisualizationSimplifiedComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,9 @@
+<button (click)="inputCandidates()">Input</button>
+<button (click)="findBestLocation()">Find</button>
+
+<div class="map"
+        leaflet 
+        [leafletOptions]="options"
+        (leafletMapReady)="onMapReady($event)">
+
+</div>
