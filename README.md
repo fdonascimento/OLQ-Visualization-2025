@@ -5,7 +5,21 @@ Este projeto se divide em dois componentes principais: *locationQuery-rest* e *o
 
 ## locationQuery-rest
 
-O *locationQuery-rest* é um serviço web *RESTFul* que calcula o melhor local para construir um empreendimento. Esse serviço disponibiliza três métodos:
+O *locationQuery-rest* é um serviço web *RESTFul* que calcula o melhor local para construir um empreendimento. Para disponibilizar o serviço basta executar o jar que se encontra na pasta target do projeto.
+
+```
+java -jar locationQuery-rest/target/locationQuery-rest-0.0.1-SNAPSHOT.jar
+```
+Para que o serviço funcione corretamente é necessário possuir um arquivo *settings.yaml* que deverá estar no mesmo diretório do jar. Através desse arquivo é possível configurar os componentes que serão utilizados para obter os dados de entrada.
+
+Além do arquivo de configuração, será necessário possuir um diretório para cada componente de entrada e esses diretórios deverão estar no mesmo diretório do jar. Os diretórios deverão possui os respectivos nomes:
+
+1. CandidateProviders - Os componentes que buscam os candidatos deverão ficar nesse diretório.
+2. ClientProviders - Os componentes que buscam os potenciais clientes deverão ficar nesse diretório.
+3. FacilityProviders - Os componentes que buscam as instalações deverão ficar nesse diretório.
+4. LocationQueries - Os componentes que executam os algoritmos de busca deverão ficar nesse diretório.
+
+Esse serviço disponibiliza três métodos: *input-candidates*, *findBestLocation* e *influenceArea*.
 
 ### input-candidates
 
@@ -36,3 +50,26 @@ O método pode ser chamado através de uma requisição *GET*.
 Esse método calcula a área de influência de uma determinado ponto. As coordenadas desse ponto devem ser passadas como parâmetro. O método pode ser chamado através de uma requisiço *GET* seguindo o seguinte padrão:
 
 */influenceArea/{latitude}/{longitude}*
+
+### Configuração do arquivo *settings.yaml*
+
+O arquivo possui apenas três dados de configuração, são eles:
+
+1. clientProvider: informa o nome do jar que será utilizado para obter os clientes.
+2. facilityProvider: informa o nome do jar que será utilizado para obter as instalaçes.
+3. candidateProvider: informa o nome do jar que será utilizado para obter os candidatos.
+4. locationQuery: informa o nome do jar que será utilizado para executar o algoritmo de busca.
+
+O arquivo ficará no seguinto padrão:
+
+```yaml
+locationQuery: min-clients-0.0.1-SNAPSHOT
+clientProvider: client-provider-txt
+facilityProvider: facility-provider-fake-0.0.1-SNAPSHOT
+candidateProvider: candidate-provider-fake-0.0.1-SNAPSHOT
+```
+
+
+## olq-visualization
+
+Esse é o componente responsável por visualizar os dados obtidos através do *locationQuery-rest*.
