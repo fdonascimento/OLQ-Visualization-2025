@@ -28,7 +28,7 @@ Esse serviço disponibiliza três métodos: *input-candidates*, *findBestLocatio
 
 ### input-candidates
 
-Recebe as coordenadas que representam os locais a serem analisados na análise. Se esse *input* não for fornecido, serão utilizadas as coordenadas obtidas através do componente *candidate-provider* que será apresentado posteriormente. O método pode ser chamado através de uma requisição *POST* enviando um arquivo *json* com as coordenadas dos pontos candidatos. O arquivo *json* deverá estar no seguinte padrão:
+Recebe as coordenadas que representam os locais a serem analisados na análise. Se esse *input* não for fornecido, serão utilizadas as coordenadas obtidas através do componente *candidate-provider*. O método pode ser chamado através de uma requisição *POST* enviando um arquivo *json* com as coordenadas dos pontos candidatos. O arquivo *json* deverá estar no seguinte padrão:
 
 ```json
 {
@@ -43,7 +43,7 @@ Recebe as coordenadas que representam os locais a serem analisados na análise. 
 
 ### findBestLocation
 
-Esse método executa o algoritmo implementado no componente *location-query* que será apresentado posteriormente e utiliza os seguintes dados como *input*:
+Esse método executa o algoritmo implementado no componente *location-query* e utiliza os seguintes dados como *input*:
 1. Candidatos - Serão obtidos através do método *input-candidates* ou do componente *candidate-provider*.
 2. Intalações - Serão obtidas através do componente *facility-provider*.
 3. Clientes - Serão obtidos através do componente *client-provider*.
