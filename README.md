@@ -10,6 +10,11 @@ O *locationQuery-rest* é um serviço web *RESTFul* que calcula o melhor local p
 ```
 java -jar locationQuery-rest/target/locationQuery-rest-0.0.1-SNAPSHOT.jar
 ```
+O serviço ficará disponibilizado no seguinte endereço:
+```
+http://localhost:8080
+```
+
 Para que o serviço funcione corretamente é necessário possuir um arquivo *settings.yaml* que deverá estar no mesmo diretório do jar. Através desse arquivo é possível configurar os componentes que serão utilizados para obter os dados de entrada.
 
 Além do arquivo de configuração, será necessário possuir um diretório para cada componente de entrada e esses diretórios deverão estar no mesmo diretório do jar. Os diretórios deverão possui os respectivos nomes:
