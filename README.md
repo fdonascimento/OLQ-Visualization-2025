@@ -74,6 +74,12 @@ facilityProvider: facility-provider-fake-0.0.1-SNAPSHOT
 candidateProvider: candidate-provider-fake-0.0.1-SNAPSHOT
 ```
 
+### Stack
+
+1. Java 8
+2. Maven
+3. Spring Boot
+
 
 ## olq-visualization
 
@@ -88,3 +94,9 @@ A visualização ficará disponível no seguinte endereço:
 ```
 http://localhost:4200
 ```
+
+### Stack
+
+1. Angular 6
+2. Leaflet js
+3. Node 8
