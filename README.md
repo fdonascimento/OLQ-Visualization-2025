@@ -77,4 +77,14 @@ candidateProvider: candidate-provider-fake-0.0.1-SNAPSHOT
 
 ## olq-visualization
 
-Esse é o componente responsável por visualizar os dados obtidos através do *locationQuery-rest*.
+Esse é o componente responsável por visualizar os dados obtidos através do *locationQuery-rest*. Para disponibilizar a visualização basta entrar no diretório *olq-visualization* e executar o seguinte comando:
+
+```
+ng serve
+```
+
+A visualização ficará disponível no seguinte endereço:
+
+```
+http://localhost:4200
+```
