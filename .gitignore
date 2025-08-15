@@ -32,3 +32,5 @@ libs/
 min-clients/\.editorconfig
 
 min-clients/target
+
+.idea/
