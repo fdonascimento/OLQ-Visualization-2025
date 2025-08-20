@@ -16,8 +16,6 @@
 	</parent>
 
 	<dependencies>
-		<!--This dependency is necessary to write tests using junit5 -->
-		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
@@ -25,16 +23,6 @@
 			<scope>test</scope>
 		</dependency>
 
-	    <!--This dependency is necessary to run junit5 on IDE. In this case on the Eclipse  -->
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-runner</artifactId>
-			<version>${junit.platform.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
@@ -42,7 +30,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -68,15 +55,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19</version>
-				<dependencies>
-					<!--This dependency is necessary to run junit5 with maven. The tests will be run when the project is built by maven.  -->
-					<dependency>
-						<groupId>org.junit.platform</groupId>
-						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>${junit.platform.version}</version>
-					</dependency>
-				</dependencies>
+				<version>${maven-surefire-plugin.version}</version>
 			</plugin>
 			
 			<plugin>

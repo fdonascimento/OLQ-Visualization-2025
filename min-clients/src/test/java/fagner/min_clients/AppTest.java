@@ -1,6 +1,6 @@
 package fagner.min_clients;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import optimalLocation.min_clients.App;
 
