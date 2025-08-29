@@ -5,7 +5,7 @@
 #The jar must be placed in the LocationQueries folder.
 locationQuery: min-clients-0.0.1-SNAPSHOT
 #The jar must be placed in the ClientProviders folder.
-clientProvider: client-provider-txt
+clientProvider: client-provider-fake-0.0.1-SNAPSHOT
 #The jar must be placed in the FacilityProviders folder.
 facilityProvider: facility-provider-fake-0.0.1-SNAPSHOT
 #The jar must be placed in the CandidateProviders folder.
